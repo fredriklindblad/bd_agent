@@ -33,12 +33,12 @@ def classify_prompt(user_prompt: str) -> IntentClassification:
         temperature=0.0,
         input=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt}
+            {"role": "user", "content": user_prompt},
         ],
         text_format=IntentClassification,
     )
-    print(f"\n🧠 Klassificering: {response.output_parsed.intent} (📈 confidence: {response.output_parsed.confidence})")
+    print(
+        f"\n🧠 Klassificering: {response.output_parsed.intent} (📈 confidence: {response.output_parsed.confidence})"
+    )
     print(f"🧩 Resonemang: {response.output_parsed.reasoning}")
     return response.output_parsed.intent
-
-
