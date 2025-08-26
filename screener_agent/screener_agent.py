@@ -1,11 +1,9 @@
 # screener_agent/screener.py
 
-import os
 from pydantic_ai import Agent
 from pydantic_ai.models.openai import OpenAIModel
 from screener_agent.models import (
     ScreenerFilterRequest,
-    ScreenerStockResult,
     ScreenerResponse,
 )
 from bd.bd_client import BorsdataClient

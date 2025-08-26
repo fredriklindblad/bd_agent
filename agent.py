@@ -1,4 +1,4 @@
-from intents.classifier import IntentClassification, classify_prompt
+from intents.classifier import classify_prompt
 from screener_agent.screener_agent import run_screener
 from analyze_agent.analyze_agent import run_analyze
 from actions.portfolio import run_portfolio

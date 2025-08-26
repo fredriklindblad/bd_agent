@@ -1,21 +1,14 @@
 from __future__ import annotations
-import os, sys, re
-from typing import Any, Dict, List, Optional, Tuple
-from difflib import get_close_matches
+from typing import List
 from datetime import datetime
 from pydantic_ai import Agent
 from pydantic_ai.models.openai import OpenAIModel
-import yaml
 from analyze_agent.utils import (
     _load_yaml_params,
-    clean_query,
-    _clean_name,
     to_float,
-    fmt_rule,
-    ratio_pass,
     _extract_year,
 )
-from analyze_agent.scorecard import (build_scorecard, build_thesis_and_verdict, Scorecard)
+from analyze_agent.scorecard import (build_scorecard, build_thesis_and_verdict)
 from analyze_agent.match_name_ticker import match_name_to_ticker
 from bd.bd_provider import FlexibleBorsdataProvider
 from bd.bd_client import BorsdataClient
@@ -23,9 +16,7 @@ from bd.bd_models import (
     AnalyzeRequest,
     Metrics,
     ScoreItem,
-    Scorecard,
     AnalyzeResponse,
-    Instrument,
 )
 
 

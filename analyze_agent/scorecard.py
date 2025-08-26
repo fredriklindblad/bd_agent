@@ -2,13 +2,9 @@
 # Scorecard & verdict
 # =========================
 
-from typing import Any, Dict, List, Optional, Tuple
-from pydantic import BaseModel
+from typing import Any, Dict, List, Tuple
 from bd.bd_models import Metrics, ScoreItem, Scorecard
 from analyze_agent.utils import to_float, fmt_rule, ratio_pass
-from math import isfinite
-from typing import Union
-from typing import Callable
 from typing import TypeVar
 T = TypeVar('T')
 

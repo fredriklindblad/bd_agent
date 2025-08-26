@@ -8,7 +8,6 @@ from skills.screen.metadata import (
     get_markets_dict,
     get_instrument_types_dict,
 )
-import json
 import re
 from typing import List, Optional
 from bd.bd_models import Instrument
