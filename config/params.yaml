@@ -1,0 +1,162 @@
+# --- Investeringsfilosofi & mål ---
+risk_profile: medium
+investment_horizon_years: 10
+benchmark:
+  name: "OMX Stockholm GI"
+  symbol: "OMXSGI"     # används för jämförelser/absolutavkastning
+
+# --- Universum (Börsdata-indata) ---
+universe_source: "bd://all"
+universe_filters:
+  countries: 4        # 1 = Sweden
+  instrument: 0       # 0 = stocks
+  currency: ""        # alla
+  sectors: 0         # tom = alla sektorer
+  exclude_delisted: true
+  min_mcap_msek: 20000           # filtrera bort illikvida micro caps
+  min_avg_daily_turnover_msek: 0.1
+
+# --- Grundkrav (gäller om inte sektor-override träffar) ---
+valuation_rules:
+  pe_max: 22
+  ev_ebit_max: 12
+  ev_sales_max: 4
+  fcf_yield_min_pct: 4           # FCF/Market Cap; om ej tillgängligt, hoppa
+  ev_ebit_yield_min_pct: 7       # EBIT/EV som komplement till EV/EBIT
+
+quality_rules:
+  ebit_margin_min_pct: 15
+  gross_margin_min_pct: 35
+  roic_min_pct: 8                # lägre vikt än margin/tillväxt men ej noll
+  margin_volatility_max_pp: 6    # std/variationsbredd i EBIT-marginal 5Y
+
+growth_rules:
+  revenue_cagr_5y_min_pct: 7
+  ebit_cagr_5y_min_pct: 8
+  positive_growth_last_2y: true
+
+financial_health:
+  net_debt_ebitda_max: 2.5
+  interest_coverage_min: 4       # EBIT/Netto räntekostnad
+  current_ratio_min: 1.2
+  share_count_cagr_5y_max_pct: 3 # undvik konstant utspädning
+
+signals:                          # för att undvika value traps
+  momentum_6m_min_pct: 0         # prisuppgång >= 0% senaste 6m
+  above_200d_ma: true
+
+# --- Margin of Safety (krav att dagens multiplar är lägre än historik/sector) ---
+margin_of_safety:
+  # jämfört med bolagets egna 5-årsmedianer
+  ev_ebit_vs_5y_median_pct_max: -20   # EV/EBIT minst 20% under egen 5Y-median
+  pe_vs_5y_median_pct_max: -15
+  # jämfört med sektorens nuvarande fördelning (percentil)
+  sector_multiple_percentile_max: 35  # under 35:e percentilen för EV/EBIT i sektor
+  # minst ett av ovan ska vara uppfyllt
+  require_any: true
+
+# --- Sektor-overrides (branschspecifika limits) ---
+sector_overrides:
+  # Programvara & tjänster (SaaS, IT‑konsult med återkommande)
+  "Software & Services":
+    valuation_rules:
+      ev_ebit_max: 20
+      ev_sales_max: 8
+    quality_rules:
+      ebit_margin_min_pct: 15
+      gross_margin_min_pct: 55
+    growth_rules:
+      revenue_cagr_5y_min_pct: 10
+      ebit_cagr_5y_min_pct: 10
+    financial_health:
+      net_debt_ebitda_max: 3.0
+    signals:
+      rule_of_40_min: 35         # Revenue growth + EBIT-margin
+  # Hälsovård (exkl. pre-revenue biotech)
+  "Health Care Equipment & Services":
+    valuation_rules:
+      ev_ebit_max: 18
+      ev_sales_max: 6
+    quality_rules:
+      ebit_margin_min_pct: 12
+      gross_margin_min_pct: 50
+    growth_rules:
+      revenue_cagr_5y_min_pct: 7
+    additional_filters:
+      exclude_pre_revenue: true   # kräver positiv omsättning & helst positiv EBIT LTM
+  # Finans (bank): värdering via P/B och kapitalkrav
+  "Banks":
+    valuation_rules:
+      pb_max: 1.2                 # proxy för pris mot eget kapital
+      pe_max: 12
+    quality_rules:
+      roae_min_pct: 10
+      cost_income_max_pct: 55
+    financial_health:
+      cet1_buffer_min_pp: 2       # över regulatoriskt krav
+    # Ignorera EV/EBIT/ND/EBITDA som är mindre relevanta här
+  # Fastigheter: fokus balansräkning, NAV och räntetäckning
+  "Real Estate":
+    valuation_rules:
+      discount_to_nav_min_pct: 15   # handla till rabatt mot EPRA NRV/NAV
+    financial_health:
+      net_loan_to_value_max_pct: 50
+      interest_coverage_min: 2.0
+    additional_filters:
+      require_positive_ffo: true
+  # Industri/Cyklist (verkstad, konsument diskretionärt)
+  "Capital Goods":
+    valuation_rules:
+      ev_ebit_max: 12
+    quality_rules:
+      ebit_margin_min_pct: 10
+      gross_margin_min_pct: 25
+    financial_health:
+      net_debt_ebitda_max: 2.0
+  "Consumer Discretionary":
+    valuation_rules:
+      ev_ebit_max: 12
+    quality_rules:
+      ebit_margin_min_pct: 8
+      gross_margin_min_pct: 30
+    financial_health:
+      net_debt_ebitda_max: 2.0
+  # Råvaror/Energi: cykliskt => strikt skuldsättning och lägre multiplar
+  "Materials":
+    valuation_rules:
+      ev_ebit_max: 8
+    quality_rules:
+      ebit_margin_min_pct: 10
+    financial_health:
+      net_debt_ebitda_max: 1.5
+  "Energy":
+    valuation_rules:
+      ev_ebit_max: 7
+    financial_health:
+      net_debt_ebitda_max: 1.0
+
+# --- Utdelning ---
+dividend_policy:
+  ignore: true        # utdelning ej styrande (kan visas men påverkar ej filtrering)
+
+# --- Ranking/Scoring för topp-listor ---
+scoring:
+  use_zscores_within_sector: true
+  weights:
+    valuation: 0.40    # EV/EBIT, PE, FCF‑yield, MOS‑uppfyllelse
+    quality:   0.35    # EBIT‑marginal, bruttomarginal, ROIC (lägre vikt)
+    growth:    0.15    # Revenue/EBIT‑CAGR
+    momentum:  0.10    # 6m & 200d MA
+  penalties:
+    high_leverage: -0.10      # om ND/EBITDA > regel
+    share_dilution: -0.05     # om ShareCount‑CAGR > gräns
+    margin_instability: -0.05 # om margin_volatility över gräns
+  require_to_beat_benchmark_expected: true
+  expected_alpha_hurdle_pct: 3   # köp endast om förväntad avkastning >= index +3%/år
+
+# --- Utdata/rapporter ---
+reporting:
+  top_n: 25
+  show_sector_medians: true
+  show_company_5y_medians: true
+  show_benchmark_comparison: true
