@@ -3,7 +3,9 @@
 # =========================
 
 from typing import Any, Dict, Optional
+
 from bd.bd_client import BorsdataClient
+
 
 class FlexibleBorsdataProvider:
     """
@@ -12,12 +14,14 @@ class FlexibleBorsdataProvider:
     - Accepterar att resultatet kan vara pydantic-modell eller dict.
     - Skriver ut vilken funktion som användes (debug).
     """
+
     def __init__(self, bd_client: BorsdataClient):
         self._bd = bd_client
         self._bdt = None
-        
+
         try:
             import bd.bd_tools as bdt
+
             self._bdt = bdt
         except Exception:
             self._bdt = None
@@ -25,8 +29,26 @@ class FlexibleBorsdataProvider:
         if self._bdt:
             try:
                 fns = [n for n in dir(self._bdt) if callable(getattr(self._bdt, n))]
-                interesting = [n for n in fns if any(k in n.lower() for k in ["ratio","ratios","quote","price","key","ebit","pe"])]
-                print("🔎 bd_tools tillgängliga funktioner:", ", ".join(sorted(interesting)))
+                interesting = [
+                    n
+                    for n in fns
+                    if any(
+                        k in n.lower()
+                        for k in [
+                            "ratio",
+                            "ratios",
+                            "quote",
+                            "price",
+                            "key",
+                            "ebit",
+                            "pe",
+                        ]
+                    )
+                ]
+                print(
+                    "🔎 bd_tools tillgängliga funktioner:",
+                    ", ".join(sorted(interesting)),
+                )
             except Exception:
                 pass
 
@@ -37,7 +59,9 @@ class FlexibleBorsdataProvider:
         try:
             res = fn(*args, **kwargs)
             if res:
-                print(f"🔧 bd_tools: använde {name}({', '.join([str(a) for a in args])})")
+                print(
+                    f"🔧 bd_tools: använde {name}({', '.join([str(a) for a in args])})"
+                )
             else:
                 print(f"⚠️ {name}({args}) returnerade tomt")
             return res or None
@@ -45,25 +69,37 @@ class FlexibleBorsdataProvider:
             print(f"💥 {name} fail: {e}")
             return None
 
-
     def _id_for_ticker(self, ticker: str) -> Optional[int]:
         # Stöd både dict och pydantic Instrument
         for it in getattr(self._bd, "instruments", []):
-            t = it.ticker if hasattr(it, "ticker") else (it.get("ticker") if isinstance(it, dict) else None)
+            t = (
+                it.ticker
+                if hasattr(it, "ticker")
+                else (it.get("ticker") if isinstance(it, dict) else None)
+            )
             if t and t.upper() == ticker.upper():
-                if hasattr(it, "id"): 
+                if hasattr(it, "id"):
                     return getattr(it, "id")
                 if isinstance(it, dict):
-                    return it.get("id") or it.get("ins_id") or it.get("InsId") or it.get("insId")
+                    return (
+                        it.get("id")
+                        or it.get("ins_id")
+                        or it.get("InsId")
+                        or it.get("insId")
+                    )
         return None
 
     # ----- Key Ratios -----
     def key_ratios_by_ticker(self, ticker: str) -> Dict[str, Any]:
         # Prova ticker-varianter
         for n in [
-            "get_key_ratios_latest", "key_ratios_latest",
-            "get_ratios_latest", "get_key_ratios", "key_ratios",
-            "get_key_ratios_latest_by_ticker", "key_ratios_latest_by_ticker",
+            "get_key_ratios_latest",
+            "key_ratios_latest",
+            "get_ratios_latest",
+            "get_key_ratios",
+            "key_ratios",
+            "get_key_ratios_latest_by_ticker",
+            "key_ratios_latest_by_ticker",
         ]:
             r = self._try_call(n, ticker)
             if r is not None:
@@ -73,9 +109,13 @@ class FlexibleBorsdataProvider:
         ins_id = self._id_for_ticker(ticker)
         if ins_id is not None:
             for n in [
-                "get_key_ratios_latest", "key_ratios_latest",
-                "get_ratios_latest", "get_key_ratios", "key_ratios",
-                "get_key_ratios_latest_by_id", "key_ratios_latest_by_id",
+                "get_key_ratios_latest",
+                "key_ratios_latest",
+                "get_ratios_latest",
+                "get_key_ratios",
+                "key_ratios",
+                "get_key_ratios_latest_by_id",
+                "key_ratios_latest_by_id",
             ]:
                 r = self._try_call(n, ins_id)
                 if r is not None:
@@ -86,9 +126,15 @@ class FlexibleBorsdataProvider:
     # ----- Quote / Price -----
     def quote_by_ticker(self, ticker: str) -> Dict[str, Any]:
         for n in [
-            "get_last_quote", "get_quote_latest", "get_quote",
-            "last_quote", "quote_latest",
-            "get_last_price", "get_price_latest", "get_price", "price_latest",
+            "get_last_quote",
+            "get_quote_latest",
+            "get_quote",
+            "last_quote",
+            "quote_latest",
+            "get_last_price",
+            "get_price_latest",
+            "get_price",
+            "price_latest",
             "get_quote_by_ticker",
         ]:
             r = self._try_call(n, ticker)
@@ -98,9 +144,15 @@ class FlexibleBorsdataProvider:
         ins_id = self._id_for_ticker(ticker)
         if ins_id is not None:
             for n in [
-                "get_last_quote", "get_quote_latest", "get_quote",
-                "last_quote", "quote_latest",
-                "get_last_price", "get_price_latest", "get_price", "price_latest",
+                "get_last_quote",
+                "get_quote_latest",
+                "get_quote",
+                "last_quote",
+                "quote_latest",
+                "get_last_price",
+                "get_price_latest",
+                "get_price",
+                "price_latest",
                 "get_quote_by_id",
             ]:
                 r = self._try_call(n, ins_id)
@@ -122,7 +174,13 @@ class FlexibleBorsdataProvider:
         if isinstance(r, (list, tuple)) and r:
             # sortera om det finns 'year'
             try:
-                r_sorted = sorted(r, key=lambda x: getattr(x, "year", x.get("year") if isinstance(x, dict) else 0), reverse=True)
+                r_sorted = sorted(
+                    r,
+                    key=lambda x: getattr(
+                        x, "year", x.get("year") if isinstance(x, dict) else 0
+                    ),
+                    reverse=True,
+                )
             except Exception:
                 r_sorted = r
             r = r_sorted[0]
@@ -135,7 +193,17 @@ class FlexibleBorsdataProvider:
         else:
             # försök plocka attribut
             d = {}
-            for key in ["year","pe","ev_ebit","ev_sales","roic","gross_margin","ebit_margin","asOf","date"]:
+            for key in [
+                "year",
+                "pe",
+                "ev_ebit",
+                "ev_sales",
+                "roic",
+                "gross_margin",
+                "ebit_margin",
+                "asOf",
+                "date",
+            ]:
                 if hasattr(r, key):
                     d[key] = getattr(r, key)
 
@@ -143,11 +211,19 @@ class FlexibleBorsdataProvider:
         out = {
             "year": d.get("year"),
             "PE": d.get("pe") if d.get("pe") is not None else d.get("PE"),
-            "EV_EBIT": d.get("ev_ebit") if d.get("ev_ebit") is not None else d.get("EV_EBIT"),
-            "EV_Sales": d.get("ev_sales") if d.get("ev_sales") is not None else d.get("EV_Sales"),
+            "EV_EBIT": d.get("ev_ebit")
+            if d.get("ev_ebit") is not None
+            else d.get("EV_EBIT"),
+            "EV_Sales": d.get("ev_sales")
+            if d.get("ev_sales") is not None
+            else d.get("EV_Sales"),
             "ROIC": d.get("roic") if d.get("roic") is not None else d.get("ROIC"),
-            "GrossMargin": d.get("gross_margin") if d.get("gross_margin") is not None else d.get("GrossMargin"),
-            "EbitMargin": d.get("ebit_margin") if d.get("ebit_margin") is not None else d.get("EbitMargin"),
+            "GrossMargin": d.get("gross_margin")
+            if d.get("gross_margin") is not None
+            else d.get("GrossMargin"),
+            "EbitMargin": d.get("ebit_margin")
+            if d.get("ebit_margin") is not None
+            else d.get("EbitMargin"),
             "asOf": d.get("asOf") or d.get("date"),
         }
         return out
@@ -165,7 +241,7 @@ class FlexibleBorsdataProvider:
             d = dict(r)
         else:
             d = {}
-            for key in ["price","last","close","marketCap","MarketCap","mcap"]:
+            for key in ["price", "last", "close", "marketCap", "MarketCap", "mcap"]:
                 if hasattr(r, key):
                     d[key] = getattr(r, key)
 
@@ -179,9 +255,14 @@ class FlexibleBorsdataProvider:
         if ins_id is None:
             return {}
         from bd.bd_tools import (
-            get_roic_latest, get_gross_margin_latest, get_ebit_margin_latest,
-            get_netdebt_ebitda_latest, get_revenue_cagr_5y, get_ebit_cagr_5y
+            get_ebit_cagr_5y,
+            get_ebit_margin_latest,
+            get_gross_margin_latest,
+            get_netdebt_ebitda_latest,
+            get_revenue_cagr_5y,
+            get_roic_latest,
         )
+
         return {
             "ROIC": get_roic_latest(ins_id),
             "GrossMargin": get_gross_margin_latest(ins_id),
