@@ -1,9 +1,11 @@
 # metadata.py
+# Hämtar och cacherar metadata
+
 from typing import Dict
 
 import requests
 
-from config import get_bdapi_key
+from bd.config import get_bdapi_key
 
 BASE_URL = "https://apiservice.borsdata.se/v1"
 
@@ -18,7 +20,6 @@ def get_sectors_dict() -> Dict[int, str]:
     url = f"{BASE_URL}/sectors?authKey={get_bdapi_key()}"
     response = requests.get(url)
     data = response.json()
-    print("data", data)
     return {s["id"]: s["name"] for s in data.get("sectors", [])}
 
 
@@ -64,21 +65,20 @@ def get_instrument_types_dict() -> Dict[int, str]:
 # -----------------------------------------------
 
 
-def get_global_instruments_dict() -> Dict[int, str]:
+def get_global_instruments_info() -> Dict[int, str]:
     """Returnerar dict med {instrumentId: instrumentName}"""
     url = f"{BASE_URL}/instruments/global?authKey={get_bdapi_key()}"
     response = requests.get(url)
     data = response.json()
-    print(len(data.get("instruments", [])))
-    print(data.get("instruments", [])[1])
     return {i["insId"]: i["name"] for i in data.get("instruments", [])}
 
 
-def get_nordics_instruments_dict() -> Dict[int, str]:
+def get_nordics_instrument_info(insId=1) -> Dict[int, str]:
     """Returnerar dict med {instrumentId: instrumentName}"""
     url = f"{BASE_URL}/instruments?authKey={get_bdapi_key()}"
     response = requests.get(url)
     data = response.json()
-    print(len(data.get("instruments", [])))
-    print(data.get("instruments", [])[1])
     return {i["insId"]: i["name"] for i in data.get("instruments", [])}
+
+
+get_nordics_instrument_info()

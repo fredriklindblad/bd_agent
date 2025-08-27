@@ -1,5 +1,9 @@
+from __future__ import annotations
+
+from typing import Any, Dict, List, Optional
+
 from pydantic import BaseModel, Field
-from typing import Optional, List
+
 
 class Instrument(BaseModel):
     id: int
@@ -13,9 +17,46 @@ class Instrument(BaseModel):
     branch_id: Optional[int]
     stock_price_currency: Optional[str]
     report_currency: Optional[str]
-    
+
+
+class ToolCall(BaseModel):
+    name: str = Field(
+        ..., description="Vilket tool som anropades, t.ex. 'resolve_ticker_tool'"
+    )
+    arguments: Dict[str, Any] = Field(
+        default_factory=dict, description="Argument som skickades till tool:et"
+    )
+    output_preview: Optional[str] = Field(
+        default=None,
+        description="Kort sammanfattning av tool-output (för logg/insyn, ej för analyslogik)",
+    )
+    timestamp_utc: Optional[str] = Field(
+        default=None,
+        description="ISO8601 UTC-tid när anropet gjordes (om du vill tidsstämpla)",
+    )
+
+
 class AnalyzeRequest(BaseModel):
-    company: str = Field(..., description="Ticker eller bolagsnamn extraherat ur prompten")
+    company: str = Field(
+        ..., description="Ticker eller bolagsnamn extraherat ur prompten"
+    )
+    rationale: Optional[str] = Field(
+        default=None,
+        description="Kort motivering från LLM kring varför detta bolag/ticker valdes",
+    )
+    tools_used: List[str] = Field(
+        default_factory=list,
+        description="Lista av tool-namn som användes (fylls i av koden efter körning)",
+    )
+    deps_used: List[str] = Field(
+        default_factory=list,
+        description="Lista av dependency-namn som användes (fylls i av koden efter körning)",
+    )
+    tool_calls: List[ToolCall] = Field(
+        default_factory=list,
+        description="Detaljerade tool-anrop (namn, args, output-preview, ev. timestamp)",
+    )
+
 
 class Metrics(BaseModel):
     as_of: Optional[str] = None
@@ -36,11 +77,13 @@ class Metrics(BaseModel):
     dividend_stability_years: Optional[int] = None
     rule_of_40: Optional[float] = None
 
+
 class ScoreItem(BaseModel):
     metric: str
     value: Optional[float] = None
     rule: Optional[str] = None
     passed: Optional[bool] = None
+
 
 class Scorecard(BaseModel):
     valuation: List[ScoreItem] = []
@@ -50,6 +93,7 @@ class Scorecard(BaseModel):
     dividend: List[ScoreItem] = []
     signals: List[ScoreItem] = []
     overall_pass: Optional[bool] = None
+
 
 class AnalyzeResponse(BaseModel):
     ticker: str
@@ -65,4 +109,3 @@ class AnalyzeResponse(BaseModel):
     thesis: str
     risks: List[str] = []
     catalysts: List[str] = []
-

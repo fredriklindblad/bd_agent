@@ -2,18 +2,20 @@
 
 from pydantic_ai import Agent
 from pydantic_ai.models.openai import OpenAIModel
+
+from bd.bd_client import BorsdataClient
+from bd.bd_metadata import (
+    get_branches_dict,
+    get_countries_dict,
+    get_instrument_types_dict,
+    get_markets_dict,
+    get_sectors_dict,
+)
 from screener_agent.models import (
     ScreenerFilterRequest,
     ScreenerResponse,
 )
-from bd.bd_client import BorsdataClient
-from bd.bd_metadata import (
-    get_sectors_dict,
-    get_countries_dict,
-    get_branches_dict,
-    get_markets_dict,
-    get_instrument_types_dict,
-)
+
 
 def run_screener(user_prompt: str) -> ScreenerResponse:
     # 1) Ladda metadata (för att instruera agenten med giltiga värden)
@@ -23,10 +25,10 @@ def run_screener(user_prompt: str) -> ScreenerResponse:
     MARKETS = get_markets_dict()
     INSTRUMENT_TYPES = get_instrument_types_dict()
 
-    country_list    = ", ".join(sorted(COUNTRIES.values()))
-    sector_list     = ", ".join(sorted(SECTORS.values()))
-    branch_list     = ", ".join(sorted(BRANCHES.values()))
-    market_list     = ", ".join(sorted(MARKETS.values()))
+    country_list = ", ".join(sorted(COUNTRIES.values()))
+    sector_list = ", ".join(sorted(SECTORS.values()))
+    branch_list = ", ".join(sorted(BRANCHES.values()))
+    market_list = ", ".join(sorted(MARKETS.values()))
     instrument_list = ", ".join(sorted(INSTRUMENT_TYPES.values()))
 
     # 2) Systemprompt: BE om FILTER (inte resultatlista!)
@@ -83,5 +85,5 @@ def run_screener(user_prompt: str) -> ScreenerResponse:
     print("Första 100:")
     for r in response.results[:100]:
         print(f"{r.ticker:10} {r.name:40} {r.sector or ''} / {r.branch or ''}")
-    
+
     return response

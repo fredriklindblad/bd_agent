@@ -1,0 +1,81 @@
+# github.txt
+
+PART ONE How to work with github
+
+1. Connect/create repository with Github online
+2. Clone or push the repository to your local machine
+3. Make changes to your local repository
+4a. Stage your changes with first "git status"
+4b. Then "git add <filename>" to stage specific files or "git add ." to stage all changes
+4c. Use "git add -p <filename>" to stage parts of a file
+4d. "git status" to see status
+4e. git log -1 to see the last commit
+5. Finally, commit your changes with "git commit -m 'your commit message'"
+6. Push your changes to the remote repository with "git push"
+
+----------------------------------------------------------------------------------------------
+
+PART TWO How to work with branches
+
+main + dev + feature
+
+1. Team need to have a written convention with branches and how to work with them.
+2. Branches can be feature branches (short) and develop/ main (long) but also other. Do not commit to main, but to shorter branches.
+3a. Development branches are used for versions and then merged or rebased. From development you can test and then go to production/main.
+3b. Feature branches are used for specific tasks or features and are merged back into develop or main when complete.
+4. Use "git branch" to see all branches and "git checkout <branch-name>" to switch branches.
+
+
+1. Create a new branch with "git branch <branch-name>"
+2. Switch to the new branch with "git checkout <branch-name>"
+3. Make changes and commit them to the new branch
+4. Switch back to the main branch with "git checkout main"
+5. Merge the changes from the new branch with "git merge <branch-name>"
+6. Delete the new branch with "git branch -d <branch-name>"
+
+versions:
+# ensure app.json versions are correct
+git checkout release/1.0   # or main if you skip release branches
+git commit -am "chore: bump version to 1.0.0"
+git tag -a v1.0.0 -m "Fabulous Five v1.0.0"
+git push origin v1.0.0
+
+----------------------------------------------------------------------------------------------
+
+PART THREE Pull requests
+
+1. Use pull request to suggest changes to branches
+2. Repo owner can accept pull requests and merge to main for example
+
+----------------------------------------------------------------------------------------------
+
+PART FOUR Integrating branches
+
+MERGE and REBASE
+
+--Merge
+1a. Combines all commits to the common ancestor between all branches
+1b. Merge commit - created automatically to connect two branches
+2. "git merge branch-B"
+
+
+--Rebase
+1. Integrera branch B to branch A: "git rebase branch-B"
+2. Rebase steps:
+    1. removes all commits on branch A
+    2. applies all from branch B (then both looks the same)
+    3. applies all branch A
+    4. looks like all happended in branch A (changes commit history)
+3. Do not Rebase commits that has been pushed to remote repository
+
+--Merge conflicts
+1. When merging, Git usually can merge and understand.
+2. Sometimes if same code has been changed, then conflict is happening. For example same line changed in two branches/commits
+git merge --abort för att starta om merge om det blivit conflict
+3. Använda conflict program eller ändra i koden och nrä du är klar - commit igen
+
+----------------------------------------------------------------------------------------------
+
+PART FIVE Integrating branches
+
+

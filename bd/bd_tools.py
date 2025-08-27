@@ -1,11 +1,12 @@
 # bd/bd_tools.py
+# Hämtar universumet av instrument
 
 from typing import Any, Dict, List, Optional
 
 import requests
 
 from bd.bd_models import Instrument
-from bd.config import get_api_key
+from bd.config import get_bdapi_key
 
 BASE_URL = "https://apiservice.borsdata.se/v1"
 
@@ -13,15 +14,15 @@ BASE_URL = "https://apiservice.borsdata.se/v1"
 # ------------------------
 # Instruments
 # ------------------------
-def get_instruments() -> List[Instrument]:
-    url = f"{BASE_URL}/instruments?authKey={get_api_key()}"
+def get_nordics_instruments() -> List[Instrument]:
+    url = f"{BASE_URL}/instruments?authKey={get_bdapi_key()}"
     r = requests.get(url, timeout=15)
     r.raise_for_status()
     data = r.json()
 
-    instruments = []
+    nordics_instruments = []
     for item in data["instruments"]:
-        instruments.append(
+        nordics_instruments.append(
             Instrument(
                 id=item["insId"],
                 name=item["name"],
@@ -36,7 +37,33 @@ def get_instruments() -> List[Instrument]:
                 report_currency=item.get("reportCurrency"),
             )
         )
-    return instruments
+    return nordics_instruments
+
+
+def get_global_instruments() -> List[Instrument]:
+    url = f"{BASE_URL}/instruments/global?authKey={get_bdapi_key()}"
+    r = requests.get(url, timeout=15)
+    r.raise_for_status()
+    data = r.json()
+
+    global_instruments = []
+    for item in data["instruments"]:
+        global_instruments.append(
+            Instrument(
+                id=item["insId"],
+                name=item["name"],
+                ticker=item["ticker"],
+                instrument_type=item.get("instrument"),
+                isin=item.get("isin"),
+                sector_id=item.get("sectorId"),
+                country_id=item.get("countryId"),
+                market_id=item.get("marketId"),
+                branch_id=item.get("branchId"),
+                stock_price_currency=item.get("stockPriceCurrency"),
+                report_currency=item.get("reportCurrency"),
+            )
+        )
+    return global_instruments
 
 
 # ------------------------
@@ -68,7 +95,7 @@ def _g(d: Dict[str, Any], *names):
 
 def _instrument_id_by_ticker(ticker: str) -> Optional[int]:
     t = (ticker or "").upper()
-    for inst in get_instruments():
+    for inst in get_global_instruments():
         if inst.ticker and inst.ticker.upper() == t:
             return inst.id
     return None
@@ -82,7 +109,7 @@ def _kpi_history_latest(
     URL-format: /v1/instruments/{insId}/kpis/{kpiId}/{report}/{price}/history
     report ∈ {"year","r12","quarter"}, price ∈ {"mean","low","high"}
     """
-    ak = get_api_key()
+    ak = get_bdapi_key()
     url = f"{BASE_URL}/instruments/{ins_id}/kpis/{kpi_id}/{report}/{price}/history?authKey={ak}"
     data = _get(url)
     if not data:
@@ -109,7 +136,7 @@ def _load_kpi_meta() -> List[Dict[str, Any]]:
     global _KPI_META_CACHE
     if _KPI_META_CACHE is not None:
         return _KPI_META_CACHE
-    url = f"{BASE_URL}/kpis?authKey={get_api_key()}"
+    url = f"{BASE_URL}/kpis?authKey={get_bdapi_key()}"
     data = _get(url) or {}
     items = data.get("kpis") or data.get("items") or []
     _KPI_META_CACHE = items if isinstance(items, list) else []
@@ -248,7 +275,7 @@ def get_key_ratios_latest_by_id(ins_id: int) -> Dict[str, Any]:
 def get_key_ratios_latest_by_ticker(ticker: str) -> Dict[str, Any]:
     t = (ticker or "").upper()
     ins_id = next(
-        (i.id for i in get_instruments() if (i.ticker or "").upper() == t), None
+        (i.id for i in get_global_instruments() if (i.ticker or "").upper() == t), None
     )
     if ins_id is None:
         return {}
@@ -264,7 +291,7 @@ def get_quote_by_id(ins_id: int) -> Dict[str, Any]:
     Vi filtrerar fram rätt instrument och mappar fält till {price, marketCap, asOf}.
     Obs: marketCap följer normalt inte med här – lämnas som None.
     """
-    ak = get_api_key()
+    ak = get_bdapi_key()
     url = f"{BASE_URL}/instruments/stockprices/last?authKey={ak}"
     data = _get(url) or {}
     items = data.get("stockPricesList") or []
@@ -292,7 +319,7 @@ def get_quote_by_id(ins_id: int) -> Dict[str, Any]:
 def get_quote_by_ticker(ticker: str) -> Dict[str, Any]:
     t = (ticker or "").upper()
     ins_id = next(
-        (i.id for i in get_instruments() if (i.ticker or "").upper() == t), None
+        (i.id for i in get_global_instruments() if (i.ticker or "").upper() == t), None
     )
     if ins_id is None:
         return {}
@@ -306,7 +333,7 @@ def _kpi_history_by_id(
     ins_id: int, kpi_id: int, reporttype: str = "year", pricetype: str = "mean"
 ) -> List[Dict[str, Any]]:
     """Returnerar lista [{'year': 2024, 'value': 123.4}, ...] för given KPI."""
-    url = f"{BASE_URL}/instruments/{ins_id}/kpis/{kpi_id}/{reporttype}/{pricetype}/history?authKey={get_api_key()}"
+    url = f"{BASE_URL}/instruments/{ins_id}/kpis/{kpi_id}/{reporttype}/{pricetype}/history?authKey={get_bdapi_key()}"
     data = _get(url) or {}
 
     values = data.get("values") or data.get("items") or data.get("data") or []

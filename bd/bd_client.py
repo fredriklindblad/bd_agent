@@ -1,18 +1,21 @@
 # screener_agent/client.py
 
-from typing import List, Optional, Iterable, Dict, Any
-from screener_agent.models import ScreenerFilterRequest, ScreenerStockResult
-from bd.bd_tools import get_instruments
+from typing import Any, Dict, Iterable, List, Optional
+
 from bd.bd_metadata import (
-    get_sectors_dict,
-    get_countries_dict,
     get_branches_dict,
+    get_countries_dict,
+    get_sectors_dict,
 )
+from bd.bd_tools import get_global_instruments
+from screener_agent.models import ScreenerFilterRequest, ScreenerStockResult
+
 
 def _norm(s: Optional[str]) -> Optional[str]:
     if s is None:
         return None
     return " ".join(s.strip().split()).lower()
+
 
 class BorsdataClient:
     def __init__(self):
@@ -21,16 +24,16 @@ class BorsdataClient:
         self.COUNTRIES: Dict[int, str] = get_countries_dict()
         self.BRANCHES: Dict[int, str] = get_branches_dict()
 
-        self.SECTOR_BY_NAME = { _norm(v): k for k, v in self.SECTORS.items() if v }
-        self.COUNTRY_BY_NAME = { _norm(v): k for k, v in self.COUNTRIES.items() if v }
-        self.BRANCH_BY_NAME  = { _norm(v): k for k, v in self.BRANCHES.items() if v }
+        self.SECTOR_BY_NAME = {_norm(v): k for k, v in self.SECTORS.items() if v}
+        self.COUNTRY_BY_NAME = {_norm(v): k for k, v in self.COUNTRIES.items() if v}
+        self.BRANCH_BY_NAME = {_norm(v): k for k, v in self.BRANCHES.items() if v}
 
         # Hämta universum
-        self.instruments = self._coerce_instruments(get_instruments())
+        self.instruments = self._coerce_instruments(get_global_instruments())
 
     def _coerce_instruments(self, items: Iterable) -> List[Dict[str, Any]]:
         """
-        Tål både objekt och dict från get_instruments(). Returnerar dict med förväntade fält.
+        Tål både objekt och dict från get_global_instruments(). Returnerar dict med förväntade fält.
         Förväntade fält: ins_id, ticker, name, country_id, sector_id, branch_id, market, instrument_type_name
         """
         out = []
@@ -40,18 +43,19 @@ class BorsdataClient:
             else:
                 get = lambda k: getattr(it, k, None)
 
-            out.append({
-                "ins_id": get("insId") or get("InsId") or get("id") or get("InsID"),
-                "ticker": get("ticker"),
-                "name": get("name"),
-                "country_id": get("country_id"),
-                "sector_id": get("sector_id"),
-                "branch_id": get("branch_id"),
-                "market": get("market"),
-                "instrument_type_name": get("instrument_type_name"),
-            })
+            out.append(
+                {
+                    "ins_id": get("insId") or get("InsId") or get("id") or get("InsID"),
+                    "ticker": get("ticker"),
+                    "name": get("name"),
+                    "country_id": get("country_id"),
+                    "sector_id": get("sector_id"),
+                    "branch_id": get("branch_id"),
+                    "market": get("market"),
+                    "instrument_type_name": get("instrument_type_name"),
+                }
+            )
         return out
-
 
     # ✅ Publik metod som din agent anropar
     def screen(
@@ -74,10 +78,7 @@ class BorsdataClient:
         return self.filter_instruments(filters, limit=limit)
 
     def filter_instruments(
-        self,
-        filters: ScreenerFilterRequest,
-        *,
-        limit: Optional[int] = None
+        self, filters: ScreenerFilterRequest, *, limit: Optional[int] = None
     ) -> List[ScreenerStockResult]:
         filtered = self.instruments
 
@@ -116,7 +117,9 @@ class BorsdataClient:
         # Instrumenttyp – exakt normaliserad match
         if filters.instrument_type and filtered:
             t = _norm(filters.instrument_type)
-            filtered = [i for i in filtered if _norm(i.get("instrument_type_name")) == t]
+            filtered = [
+                i for i in filtered if _norm(i.get("instrument_type_name")) == t
+            ]
 
         # Stabil sortering och ev. limit
         filtered.sort(key=lambda x: (x.get("ticker") or "").upper())

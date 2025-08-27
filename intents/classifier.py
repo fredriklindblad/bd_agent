@@ -1,17 +1,19 @@
-from typing import Literal
-from pydantic import BaseModel
-from openai import OpenAI
 import os
+from typing import Literal
+
+from openai import OpenAI
+from pydantic import BaseModel
 
 
 class IntentClassification(BaseModel):
     intent: Literal[
-        "screening",            # Ex: 'Hitta svenska teknikbolag'
-        "single_stock_analysis",# Ex: 'Vad tycker du om Evolution?'
-        "portfolio_analysis"    # Ex: 'Hur ser min portfölj ut?'
+        "screening",  # Ex: 'Hitta svenska teknikbolag'
+        "single_stock_analysis",  # Ex: 'Vad tycker du om Evolution?'
+        "portfolio_analysis",  # Ex: 'Hur ser min portfölj ut?'
     ]
     confidence: float  # LLM's säkerhet
     reasoning: str  # Förklaring till klassificeringen
+
 
 def classify_prompt(user_prompt: str) -> IntentClassification:
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
