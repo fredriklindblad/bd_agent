@@ -10,6 +10,7 @@ class IntentClassification(BaseModel):
         "screening",  # Ex: 'Hitta svenska teknikbolag'
         "single_stock_analysis",  # Ex: 'Vad tycker du om Evolution?'
         "portfolio_analysis",  # Ex: 'Hur ser min portfölj ut?'
+        "None",
     ]
     confidence: float  # LLM's säkerhet
     reasoning: str  # Förklaring till klassificeringen
@@ -27,7 +28,7 @@ def classify_prompt(user_prompt: str) -> IntentClassification:
                         - "portfolio_analysis" — om användaren vill analysera en portfölj eller flera innehav (t.ex. fråga om riskspridning eller omdöme om flera aktier).
                         - "general_investment_advice" — om användaren vill ha allmänna investeringsråd eller strategier.
                         Returnera även "confidence" (en float mellan 0 och 1) som anger hur säker du är på klassificeringen, samt "reasoning" där du kort förklarar varför du valde just denna intent.
-
+                        Om confidence inte är över 50 %, returnera "None" som intent.
                         Returnera en korrekt formaterad JSON enligt modellen samt din rationale till klassificeringen.
                     """
     response = client.responses.parse(

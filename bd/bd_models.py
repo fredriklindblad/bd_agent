@@ -9,6 +9,7 @@ class Instrument(BaseModel):
     id: int
     name: str
     ticker: str
+    name: str
     instrument_type: Optional[int]
     isin: Optional[str]
     sector_id: Optional[int]
@@ -17,6 +18,12 @@ class Instrument(BaseModel):
     branch_id: Optional[int]
     stock_price_currency: Optional[str]
     report_currency: Optional[str]
+
+
+class CompanyInterpretation(BaseModel):
+    insId: int
+    name: str
+    ticker: str
 
 
 class ToolCall(BaseModel):
