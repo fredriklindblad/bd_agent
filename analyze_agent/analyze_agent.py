@@ -5,9 +5,11 @@ from pydantic_ai import Agent
 from pydantic_ai.models.openai import OpenAIModel
 
 from bd.bd_metadata import get_global_instruments_info
-from bd.bd_models import CompanyInterpretation
 
-from .name_interpretation_agent import run_name_interpretation_agent
+from .name_interpretation_agent import (
+    CompanyInterpretation,
+    run_name_interpretation_agent,
+)
 
 # from analyze_agent.resolve_ticker_tool import resolve_ticker_tool
 

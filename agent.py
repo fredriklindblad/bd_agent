@@ -1,10 +1,6 @@
-from actions.portfolio import run_portfolio
-from analyze_agent.analyze_agent import run_analyze
-from general_investment_advice.general_investment_advice import (
-    run_general_investment_advice,
-)
+from analyze_agent.name_interpretation_agent import run_name_interpretation_agent
 from intents.classifier import classify_prompt
-from screener_agent.screener_agent import run_screener
+from screener_agent import run_screener
 
 
 def ask_agent(user_prompt: str):
@@ -17,10 +13,10 @@ def ask_agent(user_prompt: str):
     if intent == "screening":
         return run_screener(user_prompt)
     elif intent == "single_stock_analysis":
-        return run_analyze(user_prompt)
+        return run_name_interpretation_agent(user_prompt)
     elif intent == "portfolio_analysis":
-        return run_portfolio(user_prompt)
+        pass
     elif intent == "general_investment_advice":
-        return run_general_investment_advice(user_prompt)
+        pass
     else:
         return "🚫 Kunde inte avgöra vad du vill göra. Förklara tydligare om du vill screena, analysera bolag eller din portfölj."

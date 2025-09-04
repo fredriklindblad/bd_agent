@@ -20,12 +20,6 @@ class Instrument(BaseModel):
     report_currency: Optional[str]
 
 
-class CompanyInterpretation(BaseModel):
-    insId: int
-    name: str
-    ticker: str
-
-
 class ToolCall(BaseModel):
     name: str = Field(
         ..., description="Vilket tool som anropades, t.ex. 'resolve_ticker_tool'"
