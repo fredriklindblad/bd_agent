@@ -1,12 +1,29 @@
+# TODO - försök testa dig fram hur tools anropas och försök se om vi kan få agenten
+# att bara använda tools om de verkligen behöver. Dvs inte alltid anropa sina tools.
+# Du behöver förstå vad agenten gör i detalj.
+
+# Om det är en lista så använd[0] etc,
+# om det är en dict så använd .get("key") etc.,
+# om det är en ResponseModel tex så använd .output eller .all_messages() etc. för att få fram attribut eller metoder som kalssen har.
+# Använd print(dir(...)) för att se vad som finns.
+
+
 from __future__ import annotations
 
 from typing import TypedDict
 
 import pandas as pd
 from pydantic import BaseModel
-from pydantic_ai import Agent
-from pydantic_ai.models.openai import OpenAIModel
-from typing_extensions import TypedDict
+from pydantic_ai import Agent, RunContext
+from pydantic_ai.models.openai import OpenAIChatModel
+from pydantic_ai.messages import (
+    ModelResponse,
+    ModelRequest,
+    ToolCallPart,
+    BuiltinToolCallPart,
+    ToolCallPartDelta,
+    BuiltinToolReturnPart,
+)
 
 from bd.bd_metadata import get_global_instruments_info
 
@@ -21,10 +38,6 @@ class CompanyInterpretation(BaseModel):
 
 class Deps(TypedDict):
     names: list[str]
-
-
-class NameInterpretation(BaseModel):
-    name: str
 
 
 def get_global_instruments_df() -> pd.DataFrame:
@@ -46,41 +59,42 @@ def get_global_instruments_df() -> pd.DataFrame:
             "reportCurrency",
         ]
     )
-    print("df_new   ", type(df_new.copy()))
     return df_new.copy()
 
 
 name_agent = Agent(
-    model=OpenAIModel("gpt-4o"),
-    # deps_type=Deps,
-    # output_type=NameInterpretation
-    system_prompt="returnera en string med bolagsnamn",
-    # system_prompt=(
-    #     "Välj det mest lämpliga bolaget åt användaren, men du får ENDAST "
-    #     "returnera ett bolag som finns i listan i Deps."
-    #     "Returnera EXAKT ett tillåtet namn."
-    # ),
+    model=OpenAIChatModel("gpt-4o"),
+    deps_type=Deps,
+    output_type=CompanyInterpretation,
+    system_prompt=(
+        "Välj det mest lämpliga bolaget åt användaren, men du får ENDAST "
+        "returnera ett bolag som finns i listan i Deps."
+        "Du måste använda toolet lookup_id_ticker_from_name för att validera att namnet finns."
+        "Returnera EXAKT ett tillåtet namn."
+    ),  # när jag byter "måste" till "får inte" så ändras om tool används eller inte
 )
 
 
-def lookup_id_ticker_from_name(name: str, df: pd.DataFrame) -> CompanyInterpretation:
+@name_agent.tool
+def lookup_id_ticker_from_name(ctx: RunContext[Deps]) -> CompanyInterpretation:
     """
-    Deterministisk lookup i DF (namnet kommer från listan → bör matcha exakt).
+    Deterministisk lookup i names list (namnet kommer från listan → bör matcha exakt).
     Hanterar ev. dubbletter genom att ta första raden.
     """
-    rows = df.loc[df["name"] == name]
-    if rows.empty:
-        # defensivt fallback om något ändrats; försök case-insensitive
-        rows = df.loc[df["name"].str.casefold() == name.casefold()]
-        if rows.empty:
-            raise ValueError(f"Hittar inte namnet i DF: {name!r}")
+    # print("ctx names", ctx.deps.get("names"))
+    # for i in names:
+    #     if i.lower() == name.lower():
+    #         df = get_global_instruments_df()
+    #         row = df[df["name"].str.lower() == name.lower()].iloc[0]
+    #         return CompanyInterpretation(
+    #             insId=row["insId"], name=row["name"], ticker=row["ticker"]
+    #         )
+    return CompanyInterpretation(insId=1, name="Test", ticker="TST")
 
-    r = rows.iloc[0]
-    return CompanyInterpretation(
-        insId=int(r["insId"]),
-        name=str(r["name"]),
-        ticker=str(r["ticker"]),
-    )
+
+@name_agent.tool
+def print_names(ctx: RunContext[Deps]) -> str:
+    print("hej")
 
 
 def run_name_interpretation_agent(user_prompt: str):
@@ -91,10 +105,19 @@ def run_name_interpretation_agent(user_prompt: str):
     """
     print(f"\n🗨️  Fråga till name-interpretation-agenten: {user_prompt}")
     df = get_global_instruments_df()
-    # names = df["name"].values.tolist()
-    # result = name_agent.run_sync(user_prompt, deps={"names": names})
-    result = name_agent.run_sync(user_prompt)
-    print("result from name_agent: ", result)
+    names = df["name"].values.tolist()[:10]
+    print("names", names)
+    result = name_agent.run_sync(user_prompt, deps={"names": names})
+    # print(dir(name_agent))
+    print("\n==== RAW RESPONSE ====")
+    print(result)
+    print("\n=== OUTPUT ===")
+    print(result.output)
+    print("\n=== ALL MESSAGES ===")
+    print(result.all_messages())
+    print("\n==== TOOLS ====")
+    for i in result.all_messages()[1].parts:
+        print(i.tool_name)
     # company = lookup_id_ticker_from_name(result.output, df)
     # print("efter lookup ticker id", company)
     return None

@@ -14,7 +14,6 @@ def get_global_instruments_info() -> dict:
     url = f"{BASE_URL}/instruments/global?authKey={get_bdapi_key()}"
     response = requests.get(url)
     data = response.json()
-    print(type(data))
     return data
 
 

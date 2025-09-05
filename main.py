@@ -12,6 +12,3 @@ def main():
 if __name__ == "__main__":
     # main()
     run_name_interpretation_agent("analysera generic sweden ab")
-
-
-# TODO - steg 1 att classifier får tolka vad man vill göra, steg 2 att i analyze så får LLM ta ut enbart bolagsnmanet. steg 3 matchning på ngot effektivt asätt...

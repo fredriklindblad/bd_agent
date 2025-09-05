@@ -1,4 +1,4 @@
-from analyze_agent.name_interpretation_agent import run_name_interpretation_agent
+from analyze_agent import run_name_interpretation_agent
 from intents.classifier import classify_prompt
 from screener_agent import run_screener
 
@@ -20,3 +20,6 @@ def ask_agent(user_prompt: str):
         pass
     else:
         return "🚫 Kunde inte avgöra vad du vill göra. Förklara tydligare om du vill screena, analysera bolag eller din portfölj."
+
+
+# TODO - steg 1 att classifier får tolka vad man vill göra, steg 2 att i analyze så får LLM ta ut enbart bolagsnmanet. steg 3 matchning på ngot effektivt asätt...

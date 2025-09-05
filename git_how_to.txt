@@ -1,0 +1,40 @@
+fork ITHS repo
+
+Så här funkar det om du forkar
+
+Forka lärarens repo på GitHub (du får en egen kopia i ditt konto).
+
+Klona din fork till datorn:
+
+git clone https://github.com/dittkonto/kursrepo.git
+cd kursrepo
+
+
+Lägg till lärarens repo som upstream (för att kunna hämta nya uppdateringar):
+
+git remote add upstream https://github.com/lararen/kursrepo.git
+
+
+Jobba direkt i dina filer
+
+Öppna .py eller .ipynb i din fork-mapp.
+
+Editera, kör, testa.
+
+Dina ändringar sparas lokalt.
+
+Spara till din egen GitHub
+
+git add .
+git commit -m "mina ändringar i övning 3"
+git push origin main
+
+
+När läraren laddar upp nytt
+
+git fetch upstream
+git merge upstream/main
+
+
+→ Nu får du in lärarens nya filer ovanpå dina, utan att behöva kopiera manuellt.
+Om du och läraren har ändrat samma rad i samma fil → du får en merge conflict som du löser i VS Code (enkelt med deras merge-verktyg).
