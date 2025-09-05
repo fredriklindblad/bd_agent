@@ -1,3 +1,5 @@
+# name_interpretation_agent.py
+
 # TODO - försök testa dig fram hur tools anropas och försök se om vi kan få agenten
 # att bara använda tools om de verkligen behöver. Dvs inte alltid anropa sina tools.
 # Du behöver förstå vad agenten gör i detalj.
@@ -6,6 +8,8 @@
 # om det är en dict så använd .get("key") etc.,
 # om det är en ResponseModel tex så använd .output eller .all_messages() etc. för att få fram attribut eller metoder som kalssen har.
 # Använd print(dir(...)) för att se vad som finns.
+
+# TODO - kolla upp RunContext[Deps] - vad gör den och vrf blir inget objekt Deps class?
 
 
 from __future__ import annotations
@@ -25,6 +29,8 @@ from pydantic_ai.messages import (
     BuiltinToolReturnPart,
 )
 
+from dataclasses import dataclass
+
 from bd.bd_metadata import get_global_instruments_info
 
 """ Pydantic Agent som tolkar user prompt till vilket bolag som ska analyseras"""
@@ -36,7 +42,8 @@ class CompanyInterpretation(BaseModel):
     ticker: str
 
 
-class Deps(TypedDict):
+@dataclass
+class Deps:
     names: list[str]
 
 
@@ -76,11 +83,14 @@ name_agent = Agent(
 
 
 @name_agent.tool
-def lookup_id_ticker_from_name(ctx: RunContext[Deps]) -> CompanyInterpretation:
+def lookup_id_ticker_from_name(
+    ctx: RunContext[Deps],
+) -> CompanyInterpretation:  # [] är bara type hint, dvs inte tvingande
     """
     Deterministisk lookup i names list (namnet kommer från listan → bör matcha exakt).
     Hanterar ev. dubbletter genom att ta första raden.
     """
+    print("ctx names", type(ctx.deps))
     # print("ctx names", ctx.deps.get("names"))
     # for i in names:
     #     if i.lower() == name.lower():
@@ -107,7 +117,9 @@ def run_name_interpretation_agent(user_prompt: str):
     df = get_global_instruments_df()
     names = df["name"].values.tolist()[:10]
     print("names", names)
-    result = name_agent.run_sync(user_prompt, deps={"names": names})
+    deps = Deps(names=names)
+    print(type(deps), deps)
+    result = name_agent.run_sync(user_prompt, deps=deps)
     # print(dir(name_agent))
     print("\n==== RAW RESPONSE ====")
     print(result)
