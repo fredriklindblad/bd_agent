@@ -1,9 +1,7 @@
 # name_interpretation_agent.py
+from __future__ import annotations
 
-# TODO - försök testa dig fram hur tools anropas och försök se om vi kan få agenten
-# att bara använda tools om de verkligen behöver. Dvs inte alltid anropa sina tools.
-# Du behöver förstå vad agenten gör i detalj.
-
+""" accessa delar i output och i egna klasser """
 # Om det är en lista så använd[0] etc,
 # om det är en dict så använd .get("key") etc.,
 # om det är en ResponseModel tex så använd .output eller .all_messages() etc. för att få fram attribut eller metoder som kalssen har.
@@ -12,7 +10,28 @@
 # TODO - kolla upp RunContext[Deps] - vad gör den och vrf blir inget objekt Deps class?
 
 
-from __future__ import annotations
+"""hur agenten fungerar, dvs tolkning av result.all_messages()"""
+# 1. ModelRequest:  agenten skickar user prompt och systm prompt tsm med tillg tool info
+# 2. ModelResponse: LLM svarar med text som innehåller tool call, anropar tool
+# 2b. ToolCallPart: innehåller tool name och args som LLM bestämt
+# 3. ModelRequest:  agenten anropar tool med args och skickar svar till LLM
+# 4. ModelResponse: LLM svarar med ToolCallPart, vill anropa tool igen
+# 5. ModelRequest:  agenten anropar tool med args och skickar svar till LLM
+# 6. ModelResponse: LLM kallar på output tool och fyller enligt output typ
+# 7. ModelRequest: output funktionen körs i Python och "Final result processed." returneras
+#
+#
+
+""" hur agenten fungerar vad gäller användade av tools """
+# 1a. om jag skriver i system prompt "får inte" använda tool_1 så används det inte
+# 1b. om jag skriver "måste" använda tool_1 så används det
+# 2. annat som LLM tittar på när d3et avgör om tool ska användas
+#   a. namn på tool
+#   b. doc string i tool
+#   c. output type i tool (hjälper det för agentens output type så använder gärna)
+#   d. cost för att anropa, är det en tung eller lätt funktion?
+#
+#
 
 from typing import TypedDict
 
@@ -76,19 +95,18 @@ name_agent = Agent(
     system_prompt=(
         "Välj det mest lämpliga bolaget åt användaren, men du får ENDAST "
         "returnera ett bolag som finns i listan i Deps."
-        "Du måste använda toolet lookup_id_ticker_from_name för att validera att namnet finns."
+        "Du får använda tools print_names och do_nothing för att validera att namnet finns om du vill."
         "Returnera EXAKT ett tillåtet namn."
     ),  # när jag byter "måste" till "får inte" så ändras om tool används eller inte
 )
 
 
 @name_agent.tool
-def lookup_id_ticker_from_name(
+def do_nothing(
     ctx: RunContext[Deps],
-) -> CompanyInterpretation:  # [] är bara type hint, dvs inte tvingande
+):  # [] är bara type hint, dvs inte tvingande
     """
-    Deterministisk lookup i names list (namnet kommer från listan → bör matcha exakt).
-    Hanterar ev. dubbletter genom att ta första raden.
+    Värdelöst tool som inte gör något alls.
     """
     print("ctx names", type(ctx.deps))
     # print("ctx names", ctx.deps.get("names"))
@@ -99,7 +117,8 @@ def lookup_id_ticker_from_name(
     #         return CompanyInterpretation(
     #             insId=row["insId"], name=row["name"], ticker=row["ticker"]
     #         )
-    return CompanyInterpretation(insId=1, name="Test", ticker="TST")
+    # return CompanyInterpretation(insId=1, name="Test", ticker="TST")
+    return None
 
 
 @name_agent.tool
@@ -116,21 +135,26 @@ def run_name_interpretation_agent(user_prompt: str):
     print(f"\n🗨️  Fråga till name-interpretation-agenten: {user_prompt}")
     df = get_global_instruments_df()
     names = df["name"].values.tolist()[:10]
-    print("names", names)
+    # print("names", names)
     deps = Deps(names=names)
-    print(type(deps), deps)
+    # print(type(deps), deps)
     result = name_agent.run_sync(user_prompt, deps=deps)
     # print(dir(name_agent))
     print("\n==== RAW RESPONSE ====")
     print(result)
+    print("\n=== ALL MESSAGES ===")
+    print(log_model_request_response(result.all_messages()))
     print("\n=== OUTPUT ===")
     print(result.output)
-    print("\n=== ALL MESSAGES ===")
-    print(result.all_messages())
-    print("\n==== TOOLS ====")
-    for i in result.all_messages()[1].parts:
-        print(i.tool_name)
-    # company = lookup_id_ticker_from_name(result.output, df)
-    # print("efter lookup ticker id", company)
     return None
-    # return company
+
+
+""" helper functions below """
+
+
+def log_model_request_response(result_all_messages):
+    ram = result_all_messages
+    count = 0
+    for i in ram:
+        count += 1
+        print(f"--------------Message {count}--------------\n", i)
