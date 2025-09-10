@@ -32,6 +32,10 @@ git push origin main
 
 När läraren laddar upp nytt
 
+git remote -v för att lista fetch och upstreams
+
+git fetch upstream --dry-run för att se om det finns tillg uppdateringar
+
 git fetch upstream
 git merge upstream/main
 

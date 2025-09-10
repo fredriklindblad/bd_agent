@@ -1,5 +1,7 @@
 import requests
 
+from typing import Dict
+
 from bd.config import get_bdapi_key
 
 BASE_URL = "https://apiservice.borsdata.se/v1"
@@ -17,12 +19,12 @@ def get_global_instruments_info() -> dict:
     return data
 
 
-# def get_nordics_instruments_info(insId=1) -> Dict[int, str]:
-#     """Returnerar en JSON med info om nordiska instrument från bd request"""
-#     url = f"{BASE_URL}/instruments?authKey={get_bdapi_key()}"
-#     response = requests.get(url)
-#     data = response.json()
-#     return data
+def get_nordics_instruments_info(insId=1) -> Dict[int, str]:
+    """Returnerar en JSON med info om nordiska instrument från bd request"""
+    url = f"{BASE_URL}/instruments?authKey={get_bdapi_key()}"
+    response = requests.get(url)
+    data = response.json()
+    return data
 
 
 # -----------------------------------------------

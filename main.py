@@ -11,4 +11,4 @@ def main():
 
 if __name__ == "__main__":
     # main()
-    run_name_interpretation_agent("analysera generic sweden ab")
+    run_name_interpretation_agent("swedber")

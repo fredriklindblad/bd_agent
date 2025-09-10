@@ -1,5 +1,158 @@
 # name_interpretation_agent.py
+"""Pydantic Agent som tolkar user input och returnerar en dict {insId:int, name:str, ticker:str}"""
+
 from __future__ import annotations
+
+from typing import TypedDict
+
+import pandas as pd
+from pydantic import BaseModel
+from pydantic_ai import Agent, RunContext
+from pydantic_ai.models.openai import OpenAIChatModel
+from pydantic_ai.messages import (
+    ModelResponse,
+    ModelRequest,
+    ToolCallPart,
+    BuiltinToolCallPart,
+    ToolCallPartDelta,
+    BuiltinToolReturnPart,
+)
+
+from dataclasses import dataclass
+from rapidfuzz import process, fuzz
+
+from bd.bd_metadata import get_nordics_instruments_info
+
+""" CLASSES """
+
+
+class CompanyInterpretation(BaseModel):
+    insId: int
+    name: str
+    ticker: str
+
+
+@dataclass
+class Deps:
+    best_matches: list[str]
+
+
+""" AGENT """
+
+name_agent = Agent(
+    model=OpenAIChatModel("gpt-4o"),
+    output_type=str,
+    deps_type=Deps,
+    system_prompt=(
+        "Välj det mest lämpliga bolaget åt användaren. Du får ENDAST "
+        "välja ett namn från listan {best_matches}. Varje bolag är ett strängelement i listan."
+        "Returnera ett namn exakt så som det står i listan."
+    ),  # när jag byter "måste" till "får inte" så ändras om tool används eller inte
+)
+
+
+@name_agent.system_prompt(dynamic=True)
+def dynamic_system_prompt(ctx: RunContext[Deps]) -> str:
+    # print("TPYE CTX", type(ctx.prompt), ctx.prompt)
+    # print(dir(ctx.prompt))
+    bm = ctx.deps.best_matches
+    lines = "\n".join(f"- {name}" for name in bm)
+    return (
+        "Välj exakt ett bolagsnamn från listan nedan:\n"
+        + lines
+        + "\nReturnera namnet exakt som det står."
+    )
+
+
+""" AGENT RUN FUNCTION """
+
+
+def run_name_interpretation_agent(user_prompt: str):
+    """
+    1) Låt agenten välja ETT namn från tillåten lista.
+    2) Slå upp insId/ticker deterministiskt i DF.
+    3) Returnera CompanyInterpretation.
+    """
+    print(f"\n🗨️  Fråga till name-interpretation-agenten: {user_prompt}")
+    df = get_nordic_instruments_df()
+    # print(df.info())
+    # df_new = df[df["ticker"] == "GENI"]
+    # print(df_new.head())
+    names = df["name"].values.tolist()
+    # print(names)
+    best_matches = find_best_matches(user_prompt, names)
+    deps = Deps(best_matches=best_matches)
+    # print("BEST MATCHES: ", type(best_matches), best_matches)
+    result = name_agent.run_sync(user_prompt, deps=deps)
+    # print(dir(name_agent))
+    print("\n==== RAW RESPONSE ====")
+    print(result)
+    print("\n=== ALL MESSAGES ===")
+    print(log_model_request_response(result.all_messages()))
+    print("\n=== OUTPUT ===")
+    print(result.output)
+    comp_dict = find_ticker_and_insId(result.output, df)
+    print("\n=== FINAL RESULT ===")
+    print(comp_dict)
+    return None
+
+
+""" helper functions below """
+
+
+def find_best_matches(user_prompt: str, companies: list, n=20):
+    """Return top-N matchningar baserat på fuzzy matchning"""
+    matches = process.extract(
+        query=user_prompt,
+        choices=companies,
+        scorer=fuzz.token_sort_ratio,
+        limit=n,
+    )
+    return [match[0] for match in matches]
+
+
+def get_nordic_instruments_df() -> pd.DataFrame:
+    data = get_nordics_instruments_info()
+    instruments = data["instruments"]
+    df_raw = pd.DataFrame(instruments)
+    df_new = df_raw.drop(
+        columns=[
+            "urlName",
+            "instrument",
+            "isin",
+            "yahoo",
+            "sectorId",
+            "countryId",
+            "marketId",
+            "branchId",
+            "listingDate",
+            "stockPriceCurrency",
+            "reportCurrency",
+        ]
+    )
+    return df_new.copy()
+
+
+def log_model_request_response(result_all_messages):
+    ram = result_all_messages
+    count = 0
+    for i in ram:
+        count += 1
+        print(f"--------------Message {count}--------------\n", i)
+
+
+def find_ticker_and_insId(company_name, df) -> dict:
+    # print("\nFIND TICKER AND INSID--------------------------------------------\n")
+    # print(company_name, type(company_name))
+    # print(df.head)
+    # print(df.info())
+    selected_row = df.loc[df["name"] == company_name]
+    # print("sel row", selected_row, type(selected_row))
+    company_dict = selected_row.iloc[0].to_dict()
+    # print(company_dict, type(company_dict))
+    # print(type(selected_rows))
+    return company_dict
+
 
 """ accessa delar i output och i egna klasser """
 # Om det är en lista så använd[0] etc,
@@ -32,129 +185,3 @@ from __future__ import annotations
 #   d. cost för att anropa, är det en tung eller lätt funktion?
 #
 #
-
-from typing import TypedDict
-
-import pandas as pd
-from pydantic import BaseModel
-from pydantic_ai import Agent, RunContext
-from pydantic_ai.models.openai import OpenAIChatModel
-from pydantic_ai.messages import (
-    ModelResponse,
-    ModelRequest,
-    ToolCallPart,
-    BuiltinToolCallPart,
-    ToolCallPartDelta,
-    BuiltinToolReturnPart,
-)
-
-from dataclasses import dataclass
-
-from bd.bd_metadata import get_global_instruments_info
-
-""" Pydantic Agent som tolkar user prompt till vilket bolag som ska analyseras"""
-
-
-class CompanyInterpretation(BaseModel):
-    insId: int
-    name: str
-    ticker: str
-
-
-@dataclass
-class Deps:
-    names: list[str]
-
-
-def get_global_instruments_df() -> pd.DataFrame:
-    data = get_global_instruments_info()
-    instruments = data["instruments"]
-    df_raw = pd.DataFrame(instruments)
-    df_new = df_raw.drop(
-        columns=[
-            "urlName",
-            "instrument",
-            "isin",
-            "yahoo",
-            "sectorId",
-            "countryId",
-            "marketId",
-            "branchId",
-            "listingDate",
-            "stockPriceCurrency",
-            "reportCurrency",
-        ]
-    )
-    return df_new.copy()
-
-
-name_agent = Agent(
-    model=OpenAIChatModel("gpt-4o"),
-    deps_type=Deps,
-    output_type=CompanyInterpretation,
-    system_prompt=(
-        "Välj det mest lämpliga bolaget åt användaren, men du får ENDAST "
-        "returnera ett bolag som finns i listan i Deps."
-        "Du får använda tools print_names och do_nothing för att validera att namnet finns om du vill."
-        "Returnera EXAKT ett tillåtet namn."
-    ),  # när jag byter "måste" till "får inte" så ändras om tool används eller inte
-)
-
-
-@name_agent.tool
-def do_nothing(
-    ctx: RunContext[Deps],
-):  # [] är bara type hint, dvs inte tvingande
-    """
-    Värdelöst tool som inte gör något alls.
-    """
-    print("ctx names", type(ctx.deps))
-    # print("ctx names", ctx.deps.get("names"))
-    # for i in names:
-    #     if i.lower() == name.lower():
-    #         df = get_global_instruments_df()
-    #         row = df[df["name"].str.lower() == name.lower()].iloc[0]
-    #         return CompanyInterpretation(
-    #             insId=row["insId"], name=row["name"], ticker=row["ticker"]
-    #         )
-    # return CompanyInterpretation(insId=1, name="Test", ticker="TST")
-    return None
-
-
-@name_agent.tool
-def print_names(ctx: RunContext[Deps]) -> str:
-    print("hej")
-
-
-def run_name_interpretation_agent(user_prompt: str):
-    """
-    1) Låt agenten välja ETT namn från tillåten lista.
-    2) Slå upp insId/ticker deterministiskt i DF.
-    3) Returnera CompanyInterpretation.
-    """
-    print(f"\n🗨️  Fråga till name-interpretation-agenten: {user_prompt}")
-    df = get_global_instruments_df()
-    names = df["name"].values.tolist()[:10]
-    # print("names", names)
-    deps = Deps(names=names)
-    # print(type(deps), deps)
-    result = name_agent.run_sync(user_prompt, deps=deps)
-    # print(dir(name_agent))
-    print("\n==== RAW RESPONSE ====")
-    print(result)
-    print("\n=== ALL MESSAGES ===")
-    print(log_model_request_response(result.all_messages()))
-    print("\n=== OUTPUT ===")
-    print(result.output)
-    return None
-
-
-""" helper functions below """
-
-
-def log_model_request_response(result_all_messages):
-    ram = result_all_messages
-    count = 0
-    for i in ram:
-        count += 1
-        print(f"--------------Message {count}--------------\n", i)
