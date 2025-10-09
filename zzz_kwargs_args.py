@@ -6,7 +6,7 @@ def demo(a, b, *args, c=0, **kwargs):
     print(f"kwargs: {kwargs}")
 
 
-# demo(1, 4, x=20, y=30, c=10)
+demo(1, 4, x=20, y=30, c=10)
 
 
 """

@@ -1,5 +1,9 @@
-# name_interpretation_agent.py
-"""Pydantic Agent som tolkar user input och returnerar en dict {insId:int, name:str, ticker:str}"""
+"""
+name_interpretation_agent.py
+
+Pydantic Agent som tolkar user input och returnerar en dict {insId:int, name:str, ticker:str}
+
+"""
 
 from __future__ import annotations
 
@@ -44,8 +48,8 @@ name_agent = Agent(
     output_type=str,
     deps_type=Deps,
     system_prompt=(
-        "Välj det mest lämpliga bolaget åt användaren. Du får ENDAST "
-        "välja ett namn från listan {best_matches}. Varje bolag är ett strängelement i listan."
+        "Välj det mest lämpliga bolaget åt användaren."
+        "Du får ENDAST välja ett namn från den lista du får i nästa systemmeddelande."
         "Returnera ett namn exakt så som det står i listan."
     ),  # när jag byter "måste" till "får inte" så ändras om tool används eller inte
 )
@@ -67,34 +71,38 @@ def dynamic_system_prompt(ctx: RunContext[Deps]) -> str:
 """ AGENT RUN FUNCTION """
 
 
-def run_name_interpretation_agent(user_prompt: str):
+def run_name_interpretation_agent(user_prompt: str) -> CompanyInterpretation:
     """
-    1) Låt agenten välja ETT namn från tillåten lista.
+    1) Agenten tar user prompt
+    2) Agenten hämtar en lista av bolagsnamn från nordic_instruments, dvs BD API.
+
+
+    Låt agenten välja ETT namn från tillåten lista.
     2) Slå upp insId/ticker deterministiskt i DF.
     3) Returnera CompanyInterpretation.
     """
     print(f"\n🗨️  Fråga till name-interpretation-agenten: {user_prompt}")
-    df = get_nordic_instruments_df()
-    # print(df.info())
+    df = get_nordic_instruments_df()  # skapar en df med insId, name, ticker från BD API
     # df_new = df[df["ticker"] == "GENI"]
     # print(df_new.head())
-    names = df["name"].values.tolist()
-    # print(names)
-    best_matches = find_best_matches(user_prompt, names)
-    deps = Deps(best_matches=best_matches)
-    # print("BEST MATCHES: ", type(best_matches), best_matches)
+    names = df["name"].values.tolist()  # skapar en lista med alla bolagsnamn
+    best_matches = find_best_matches(user_prompt, names)  # hitta top-N matchningar
+    deps = Deps(best_matches=best_matches)  # best matches är en lista med str
+
+    """Kör agenten och printa resulatet"""
     result = name_agent.run_sync(user_prompt, deps=deps)
-    # print(dir(name_agent))
     print("\n==== RAW RESPONSE ====")
     print(result)
+    print("\n=== COST & USAGE ===")
+    print(result.usage())
     print("\n=== ALL MESSAGES ===")
     print(log_model_request_response(result.all_messages()))
     print("\n=== OUTPUT ===")
     print(result.output)
-    comp_dict = find_ticker_and_insId(result.output, df)
+    comp_dict = find_ticker_and_insId(result.output, df)  # TICK och INSID från df
     print("\n=== FINAL RESULT ===")
-    print(comp_dict)
-    return None
+    print(CompanyInterpretation(**comp_dict))  # access del genom .InsId etc
+    return CompanyInterpretation(**comp_dict)
 
 
 """ helper functions below """
@@ -142,15 +150,9 @@ def log_model_request_response(result_all_messages):
 
 
 def find_ticker_and_insId(company_name, df) -> dict:
-    # print("\nFIND TICKER AND INSID--------------------------------------------\n")
-    # print(company_name, type(company_name))
-    # print(df.head)
-    # print(df.info())
+    """Takes company name and dataframe. Returns dict with insId, name, ticker for the company."""
     selected_row = df.loc[df["name"] == company_name]
-    # print("sel row", selected_row, type(selected_row))
     company_dict = selected_row.iloc[0].to_dict()
-    # print(company_dict, type(company_dict))
-    # print(type(selected_rows))
     return company_dict
 
 
