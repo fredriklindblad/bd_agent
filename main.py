@@ -1,5 +1,5 @@
 from agent import ask_agent
-from analyze_agent import run_name_interpretation_agent
+from analyze_agent import run_name_interpretation_agent  # TODO ta bort senare
 
 
 def main():
@@ -10,5 +10,5 @@ def main():
 
 
 if __name__ == "__main__":
-    # main()
-    run_name_interpretation_agent("swedber")
+    main()
+    # run_name_interpretation_agent("swedber")   #TODO ta bort senare

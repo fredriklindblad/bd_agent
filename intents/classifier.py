@@ -4,6 +4,8 @@ from typing import Literal
 from openai import OpenAI
 from pydantic import BaseModel
 
+from bd.config import get_openai_key
+
 
 class IntentClassification(BaseModel):
     intent: Literal[
@@ -17,7 +19,7 @@ class IntentClassification(BaseModel):
 
 
 def classify_prompt(user_prompt: str) -> IntentClassification:
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    client = OpenAI(api_key=get_openai_key())
     system_prompt = """
                         Du är en AI-agent som klassificerar vad användaren vill göra i en investeringsassistent.
 
