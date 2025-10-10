@@ -1,6 +1,6 @@
 # type hints
 # useful functions are id(), dir(), help(), type(), isinstance()
-# hur funkar sessions?
+# hur funkar sessions? i bd client
 
 import analyze_agent
 

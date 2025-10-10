@@ -13,7 +13,7 @@ from pydantic_ai.messages import (
 )
 
 # Din egen modell (du har redan denna i bd.bd_models)
-from bd.bd_models import (
+from bd_agent.bd.models import (
     ToolCall,  # name: str, args: dict, output_preview: str|None, called_at: datetime|None
 )
 

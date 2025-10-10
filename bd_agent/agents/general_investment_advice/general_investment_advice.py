@@ -1,3 +1,2 @@
-def run_general_investment_advice():
+def run():
     pass
-
