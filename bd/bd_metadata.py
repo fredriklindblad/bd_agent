@@ -2,7 +2,7 @@ import requests
 
 from typing import Dict
 
-from bd.config import get_bdapi_key
+from config import get_bdapi_key
 
 BASE_URL = "https://apiservice.borsdata.se/v1"
 
@@ -25,6 +25,9 @@ def get_nordics_instruments_info(insId=1) -> Dict[int, str]:
     response = requests.get(url)
     data = response.json()
     return data
+
+
+print(get_nordics_instruments_info()[0])
 
 
 # -----------------------------------------------

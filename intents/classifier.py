@@ -4,7 +4,7 @@ from typing import Literal
 from openai import OpenAI
 from pydantic import BaseModel
 
-from bd.config import get_openai_key
+from config import get_openai_key
 
 
 class IntentClassification(BaseModel):

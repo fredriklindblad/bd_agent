@@ -3,7 +3,11 @@ from intents.classifier import classify_prompt
 from screener_agent import run_screener
 
 
-def ask_agent(user_prompt: str):
+def ask_agent():
+    user_prompt = input(
+        """🧠 Skriv din fråga. Du kan:\n(1) analysera enskilt bolag\n(2) screena bolag inom bransch och land\n
+        (3) se och analysera din portfölj\n>>"""
+    )
     print(f"\n🗨️  Fråga till agenten: {user_prompt}")
 
     # Klassificera användarens prompt
