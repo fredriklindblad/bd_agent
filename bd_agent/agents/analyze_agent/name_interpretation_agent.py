@@ -1,7 +1,7 @@
 """
 name_interpretation_agent.py
 
-Pydantic Agent som tolkar user input och returnerar en dict {insId:int, name:str, ticker:str}
+Pydantic Agent that interprets user input and returns a dict {insId:int, name:str, ticker:str}
 
 """
 
@@ -25,7 +25,7 @@ from pydantic_ai.messages import (
 from dataclasses import dataclass
 from rapidfuzz import process, fuzz
 
-from bd_agent.bd import get_nordics_instruments_info
+from bd_agent.bd import BorsdataClient
 
 """ CLASSES """
 
@@ -51,14 +51,12 @@ name_agent = Agent(
         "Välj det mest lämpliga bolaget åt användaren."
         "Du får ENDAST välja ett namn från den lista du får i nästa systemmeddelande."
         "Returnera ett namn exakt så som det står i listan."
-    ),  # när jag byter "måste" till "får inte" så ändras om tool används eller inte
+    ),
 )
 
 
 @name_agent.system_prompt(dynamic=True)
 def dynamic_system_prompt(ctx: RunContext[Deps]) -> str:
-    # print("TPYE CTX", type(ctx.prompt), ctx.prompt)
-    # print(dir(ctx.prompt))
     bm = ctx.deps.best_matches
     lines = "\n".join(f"- {name}" for name in bm)
     return (
@@ -120,7 +118,7 @@ def find_best_matches(user_prompt: str, companies: list, n=20):
 
 
 def get_nordic_instruments_df() -> pd.DataFrame:
-    data = get_nordics_instruments_info()
+    data = BorsdataClient().get_nordic_instruments()
     instruments = data["instruments"]
     df_raw = pd.DataFrame(instruments)
     df_new = df_raw.drop(

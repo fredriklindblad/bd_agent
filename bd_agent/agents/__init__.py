@@ -1,15 +1,15 @@
 """
-bd_agents.agents — publikt API och registry för alla agents.
+agents — public API for all the agents within the bd_agent
 
-Publikt API:
+Public API:
 - run_analyzer
 - run_screener
 - run_advicer
 """
 
-from bd_agent.agents.analyze_agent.analyze_agent import run as run_analyzer
-from bd_agent.agents.screener_agent.screener_agent import run as run_screener
-from bd_agent.agents.general_investment_advice.general_investment_advice import (
+from .analyze_agent.analyze_agent import run as run_analyzer
+from .screener_agent.screener_agent import run as run_screener
+from .general_investment_advice.general_investment_advice import (
     run as run_advicer,
 )
 

@@ -1,0 +1,1 @@
+# 1. Make functionality that takes the current portfolio and creates outlook reminders for calendar event and invites all from my list.

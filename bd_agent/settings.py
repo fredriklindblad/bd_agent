@@ -1,4 +1,4 @@
-# Configurations for the BD and OPENAI API keys
+"""Configurations for the BD and OPENAI API keys"""
 
 import os
 

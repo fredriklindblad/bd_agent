@@ -1,8 +1,10 @@
+"""Models for the BD fetched data is created here"""
+
 from pydantic import BaseModel
 from typing import Optional
 
 
-class Instrument(BaseModel):
+class InstrumentInfo(BaseModel):
     insId: int
     name: str
     insType: Optional[int] = None

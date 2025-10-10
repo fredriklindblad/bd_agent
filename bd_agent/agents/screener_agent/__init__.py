@@ -1,3 +1,10 @@
-from bd_agent.agents.screener_agent import run
+"""
+screener_agent — tool for screening.
+
+Public API:
+- run
+"""
+
+from .screener_agent import run
 
 __all__ = ["run"]

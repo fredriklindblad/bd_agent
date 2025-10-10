@@ -5,7 +5,7 @@ Publikt API:
 - run
 """
 
-from bd_agent.agents.analyze_agent import run
+from .analyze_agent import run
 
 __all__ = ["run"]
 

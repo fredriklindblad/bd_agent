@@ -1,27 +1,28 @@
-from .intents.classifier import classify_prompt
+"""Router that is called from __main__.py and routes forward to the correct agent"""
+
+from bd_agent.intents import intent_classifier
+import bd_agent.agents as agents
 
 
-def router():
-    user_prompt = input(
-        """🧠 Skriv din fråga. Du kan:\n(1) analysera enskilt bolag\n(2) screena bolag inom bransch och land\n
-        (3) se och analysera din portfölj\n>>"""
-    )
-    print(f"\n🗨️  Fråga till agenten: {user_prompt}")
+def run_agent() -> None:  # TODO - fix print format and type hint
+    """Runs the agent through intent and direct to the right agent.
+    Then prints the output.
+    """
 
-    # Klassificera användarens prompt
-    intent = classify_prompt(user_prompt)
-    print(f"📂 Klassificerad intent: {intent}")
-    # Beroende på klassificeringen, kör rätt funktion
-    # if intent == "screening":
-    #     return run_screener(user_prompt)
-    # elif intent == "single_stock_analysis":
-    #     return run_name_interpretation_agent(user_prompt)
-    # elif intent == "portfolio_analysis":
-    #     pass
-    # elif intent == "general_investment_advice":
-    #     pass
-    # else:
-    #     return "🚫 Kunde inte avgöra vad du vill göra. Förklara tydligare om du vill screena, analysera bolag eller din portfölj."
+    # Take input from user
+    user_prompt = input("What can I help you with today?\n>>")
 
+    # Classify user prompt
+    intent = intent_classifier(user_prompt).intent
 
-# TODO - steg 1 att classifier får tolka vad man vill göra, steg 2 att i analyze så får LLM ta ut enbart bolagsnmanet. steg 3 matchning på ngot effektivt asätt...
+    # route forward to right agent based on intent
+    if intent == "screening":
+        return agents.run_screener(user_prompt)
+    elif intent == "single_stock_analysis":
+        return agents.run_analyzer(user_prompt)
+    elif intent == "portfolio_analysis":
+        pass
+    elif intent == "general_investment_advice":
+        pass
+    else:
+        return "Could not assess intent. Please retry."

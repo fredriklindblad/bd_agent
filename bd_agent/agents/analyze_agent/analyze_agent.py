@@ -1,15 +1,8 @@
 # analyze_agent/analyze_agent.py
 from __future__ import annotations
 
-from pydantic_ai import Agent
-from pydantic_ai.models.openai import OpenAIModel
-
-from .name_interpretation_agent import (
-    CompanyInterpretation,
-    run as run_name_interpretation_agent,
-)
-
-from bd_agent.bd import BorsdataClient, get_nordics_instruments_info
+from .name_interpretation_agent import run as run_name_interpretation_agent
+from bd_agent.bd import BorsdataClient
 
 # from analyze_agent.resolve_ticker_tool import resolve_ticker_tool
 
@@ -71,28 +64,30 @@ from bd_agent.bd import BorsdataClient, get_nordics_instruments_info
 
 
 def run(user_prompt: str):
-    insId = run_name_interpretation_agent(user_prompt)
-    print(insId)
-    print(f"\n🗨️  Fråga till analyze-agenten: {user_prompt}")
-    # 1) TOLKA BOLAG (tolka prompt → bolag)
+    insId = run_name_interpretation_agent(user_prompt).insId
+    bd = BorsdataClient()
+    kpis = bd.get_instrument_kpi(insId=insId)
+    print(type(kpis))
+    # print(f"\n🗨️  Fråga till analyze-agenten: {user_prompt}")
+    # # 1) TOLKA BOLAG (tolka prompt → bolag)
 
-    model = OpenAIModel("gpt-4o")
-    system_prompt = """
-                        Du är en namntolkningsagent. Du ska hjälpa till att matcha användarens prompt
-                        till en bästa matchning från en lista. Du ska returnera i form av namn och InsId.
-                        Du har fått en JSON som Deps i vilken du ska leta bland 'name' och 'ticker' för
-                        att tolka vilket bolag användaren menar.
-                        Returnera ETT bolag enligt output type där du tar 'InsId', 'name' och 'ticker' från deps för
-                        att returnera output.
-                    """
-    name_agent = Agent(
-        model=model,
-        output_type=CompanyInterpretation,
-        deps_type=get_nordics_instruments_info(),
-        system_prompt=system_prompt,
-    )
-    result = name_agent.run_sync(user_prompt)
-    print(result)
+    # model = OpenAIModel("gpt-4o")
+    # system_prompt = """
+    #                     Du är en namntolkningsagent. Du ska hjälpa till att matcha användarens prompt
+    #                     till en bästa matchning från en lista. Du ska returnera i form av namn och InsId.
+    #                     Du har fått en JSON som Deps i vilken du ska leta bland 'name' och 'ticker' för
+    #                     att tolka vilket bolag användaren menar.
+    #                     Returnera ETT bolag enligt output type där du tar 'InsId', 'name' och 'ticker' från deps för
+    #                     att returnera output.
+    #                 """
+    # name_agent = Agent(
+    #     model=model,
+    #     output_type=CompanyInterpretation,
+    #     deps_type=get_nordics_instruments_info(),
+    #     system_prompt=system_prompt,
+    # )
+    # result = name_agent.run_sync(user_prompt)
+    # print(result)
 
 
 # deps = Deps(
