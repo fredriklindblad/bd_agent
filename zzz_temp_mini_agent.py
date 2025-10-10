@@ -1,7 +1,7 @@
 from openai import OpenAI
-from . import config
+from .bd_agent import settings
 
-client = OpenAI(api_key=config.get_openai_key())
+client = OpenAI(api_key=settings.get_openai_key())
 
 response = client.responses.create(
     model="gpt-4o",
