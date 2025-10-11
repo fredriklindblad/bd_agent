@@ -7,9 +7,14 @@ Publikt API:
 
 from bd_agent.bd._client import BorsdataClient
 from bd_agent.bd._models import InstrumentInfo
-from bd_agent.bd.repository import get_instrument_info_by_id
+from bd_agent.bd.repository import get_instrument_info_by_id, kpis_json_to_df
 
-__all__ = ["BorsdataClient", "InstrumentInfo", "get_instrument_info_by_id"]
+__all__ = [
+    "BorsdataClient",
+    "InstrumentInfo",
+    "get_instrument_info_by_id",
+    "kpis_json_to_df",
+]
 
 
 """

@@ -48,7 +48,8 @@ name_agent = Agent(
     output_type=str,
     deps_type=Deps,
     system_prompt=(
-        "Välj det mest lämpliga bolaget åt användaren."
+        "Utifrån användarens meddelande ska du först tolka vilken del som är ett bolagsnamn."
+        "Du kommer i nästa systemmeddelande få en lista med bolagsnamn."
         "Du får ENDAST välja ett namn från den lista du får i nästa systemmeddelande."
         "Returnera ett namn exakt så som det står i listan."
     ),

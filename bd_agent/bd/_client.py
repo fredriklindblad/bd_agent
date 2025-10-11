@@ -25,9 +25,9 @@ class BorsdataClient:
         data = response.json()
         return data
 
-    def get_instrument_kpi(self, insId=1, reportType="year"):
+    def get_instrument_kpi(self, insId=1, reportType="year") -> dict:
         """Returns a JSON with KPI info for a specific instrument from BD API call"""
         url = f"{self.base_url}/instruments/{insId}/kpis/{reportType}/summary?authKey={self.api_key}"
         response = requests.get(url)
-        data = response.text
+        data = response.json()
         return data
