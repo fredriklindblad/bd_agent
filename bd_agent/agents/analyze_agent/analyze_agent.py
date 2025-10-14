@@ -5,7 +5,7 @@ from bd_agent.agents._name_interpretation_agent.name_interpretation_agent import
     run as run_name_interpretation_agent,
 )
 from bd_agent.bd import BorsdataClient, kpis_json_to_df, get_instrument_info_by_id
-from bd_agent.agents._find_industry_and_industry_kpis.__find_industry_kpis import (
+from bd_agent.agents._find_industry_kpis.__find_industry_kpis import (
     _find_industry_kpis,
 )
 

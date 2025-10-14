@@ -5,6 +5,6 @@ Publikt API:
 - run
 """
 
-from .name_interpretation_agent import run
+from .__find_industry_kpis import _find_industry_kpis
 
-__all__ = ["run"]
+__all__ = ["_find_industry_kpis"]
