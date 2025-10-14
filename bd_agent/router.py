@@ -2,6 +2,10 @@
 
 from bd_agent.intents import intent_classifier
 import bd_agent.agents as agents
+from bd_agent.agents._find_industry_and_industry_kpis.__find_industry_kpis import (
+    _find_industry_kpis,
+)
+import bd_agent.bd as bd
 
 
 def run_agent() -> None:  # TODO - fix print format and type hint

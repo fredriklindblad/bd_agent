@@ -27,6 +27,8 @@ from rapidfuzz import process, fuzz
 
 from bd_agent.bd import BorsdataClient
 
+from .extract_name_from_prompt import extract_name
+
 """ CLASSES """
 
 
@@ -81,23 +83,28 @@ def run(user_prompt: str) -> CompanyInterpretation:
     3) Returnera CompanyInterpretation.
     """
     print(f"\n🗨️  Fråga till name-interpretation-agenten: {user_prompt}")
+
+    # extract name from total user prompt
+    extracted_name = extract_name(user_prompt)
+    print(f"Extracted prompt part that is name is: '{extracted_name}''.")
+
     df = get_nordic_instruments_df()  # skapar en df med insId, name, ticker från BD API
     # df_new = df[df["ticker"] == "GENI"]
     # print(df_new.head())
     names = df["name"].values.tolist()  # skapar en lista med alla bolagsnamn
-    best_matches = find_best_matches(user_prompt, names)  # hitta top-N matchningar
+    best_matches = find_best_matches(extracted_name, names)  # hitta top-N matchningar
     deps = Deps(best_matches=best_matches)  # best matches är en lista med str
 
     """Kör agenten och printa resulatet"""
-    result = name_agent.run_sync(user_prompt, deps=deps)
-    print("\n==== RAW RESPONSE ====")
-    print(result)
-    print("\n=== COST & USAGE ===")
-    print(result.usage())
-    print("\n=== ALL MESSAGES ===")
-    print(log_model_request_response(result.all_messages()))
-    print("\n=== OUTPUT ===")
-    print(result.output)
+    result = name_agent.run_sync(extracted_name, deps=deps)
+    # print("\n==== RAW RESPONSE ====")
+    # print(result)
+    # print("\n=== COST & USAGE ===")
+    # print(result.usage())
+    # print("\n=== ALL MESSAGES ===")
+    # print(log_model_request_response(result.all_messages()))
+    # print("\n=== OUTPUT ===")
+    # print(result.output)
     comp_dict = find_ticker_and_insId(result.output, df)  # TICK och INSID från df
     print("\n=== FINAL RESULT ===")
     print(CompanyInterpretation(**comp_dict))  # access del genom .InsId etc
@@ -107,10 +114,10 @@ def run(user_prompt: str) -> CompanyInterpretation:
 """ helper functions below """
 
 
-def find_best_matches(user_prompt: str, companies: list, n=20):
+def find_best_matches(extracted_name: str, companies: list, n=20):
     """Return top-N matchningar baserat på fuzzy matchning"""
     matches = process.extract(
-        query=user_prompt,
+        query=extracted_name,
         choices=companies,
         scorer=fuzz.token_sort_ratio,
         limit=n,
