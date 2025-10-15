@@ -20,21 +20,24 @@ def _find_industry_kpis(insId: int) -> list[KPISuggestion]:
     sectorId = bd.get_instrument_info_by_id(insId).sectorId
     sectorName = bd.get_sectors()[sectorId]
 
-    # find branch name
-    branchId = bd.get_instrument_info_by_id(insId).branchId
-    branchName = bd.get_branches()[branchId]
+    # find industry name
+    # print(insId, "insiddd")
+    industryId = bd.get_instrument_info_by_id(insId)["industryId"]
+    print(industryId, "inddd id")
+    industryName = bd.get_industries()[industryId]
+    print("indd name", industryName)
 
-    # find branch companies and save in a list (can to sector too if you want)
-    branch_companies = bd.get_companies_by_branch(branchId)
-    branch_list = [comp["name"] for comp in branch_companies]
+    # find industry companies and save in a list (can to sector too if you want)
+    industry_companies = bd.get_companies_by_industry(industryId)
+    industry_list = [comp["name"] for comp in industry_companies]
 
     system_prompt = f"""
                         Du är en investeringsanalytiker. 
                         Ditt mål är att identifiera de 5-10 nyckeltal (KPI:er) som är mest relevanta för analys 
-                        av bolag inom sektorn "{sectorName}" och branschen "{branchName}". Fokusera på att ta reda på inte bara
-                        generella KPI:er för bolag utan i synnerhet på sektorn "{sectorName}" och branschen "{branchName}".
+                        av bolag inom sektorn "{sectorName}" och branschen "{industryName}". Fokusera på att ta reda på inte bara
+                        generella KPI:er för bolag utan i synnerhet på sektorn "{sectorName}" och branschen "{industryName}".
                         
-                        Bolag som är i denna branch och som går leta relevanta KPI:er för är: {branch_list[:20]}
+                        Bolag som är i denna industry och som går leta relevanta KPI:er för är: {industry_list[:20]}
 
                         1. Använd primärt information från välkända, trovärdiga finanskällor:
                         - Investopedia

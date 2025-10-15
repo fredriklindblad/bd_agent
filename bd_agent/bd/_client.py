@@ -15,19 +15,31 @@ class BorsdataClient:
 
     def __init__(self, api_key: Optional[str] = None, base_url: str = BASE_URL) -> None:
         """Initializes the BorsdataClient with an API key and base URL."""
+
         self.api_key = api_key or os.getenv("BORSDATA_API_KEY")
         self.base_url = base_url
 
-    def get_nordic_instruments(self) -> dict:
-        """Returns a JSON with info about all nordic instruments from BD API call"""
+    def get_nordic_instruments(self) -> list[dict]:
+        """Returns a list[dict] with info about all nordic instruments from BD API call
+        Also renames branchId -> industryId for internal consistency"""
+
         url = f"{self.base_url}/instruments?authKey={self.api_key}"
         response = requests.get(url)
         data = response.json()
-        return data
+
+        # rename branchId to industryId
+        instruments = data.get("instruments", [])  # [] is security fallback if empty
+        for ins in instruments:
+            if "branchId" in ins:
+                ins["industryId"] = ins.pop("branchId")
+
+        return instruments
 
     def get_instrument_kpi(self, insId=1, reportType="year") -> dict:
         """Returns a JSON with KPI info for a specific instrument from BD API call"""
+
         url = f"{self.base_url}/instruments/{insId}/kpis/{reportType}/summary?authKey={self.api_key}"
         response = requests.get(url)
         data = response.json()
+
         return data

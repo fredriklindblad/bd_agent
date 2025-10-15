@@ -55,6 +55,6 @@ def create_kpis_report(df: pd.DataFrame):
 
 
 # -------- internal functions --------
-def get_branch_average_kpis(branchId):
+def get_industry_average_kpis(industryId):
     """ """
     pass

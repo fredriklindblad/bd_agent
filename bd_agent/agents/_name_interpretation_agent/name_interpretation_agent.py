@@ -126,8 +126,7 @@ def find_best_matches(extracted_name: str, companies: list, n=20):
 
 
 def get_nordic_instruments_df() -> pd.DataFrame:
-    data = BorsdataClient().get_nordic_instruments()
-    instruments = data["instruments"]
+    instruments = BorsdataClient().get_nordic_instruments()
     df_raw = pd.DataFrame(instruments)
     df_new = df_raw.drop(
         columns=[
@@ -138,7 +137,7 @@ def get_nordic_instruments_df() -> pd.DataFrame:
             "sectorId",
             "countryId",
             "marketId",
-            "branchId",
+            "industryId",
             "listingDate",
             "stockPriceCurrency",
             "reportCurrency",
