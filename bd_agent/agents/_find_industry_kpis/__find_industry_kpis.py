@@ -21,11 +21,8 @@ def _find_industry_kpis(insId: int) -> list[KPISuggestion]:
     sectorName = bd.get_sectors()[sectorId]
 
     # find industry name
-    # print(insId, "insiddd")
-    industryId = bd.get_instrument_info_by_id(insId)["industryId"]
-    print(industryId, "inddd id")
+    industryId = bd.get_instrument_info_by_id(insId).industryId
     industryName = bd.get_industries()[industryId]
-    print("indd name", industryName)
 
     # find industry companies and save in a list (can to sector too if you want)
     industry_companies = bd.get_companies_by_industry(industryId)
@@ -74,7 +71,7 @@ def _find_industry_kpis(insId: int) -> list[KPISuggestion]:
     # validate the KPI suggestion. if nothing happen its OK, else error raised
     validate_kpi_suggestions(result.output)
 
-    # result.output är en lista av KPISuggestions som har id, name, rationale och sources
-    print(result.output)
+    # # result.output är en lista av KPISuggestions som har id, name, rationale och sources
+    # print(result.output)
 
     return result.output

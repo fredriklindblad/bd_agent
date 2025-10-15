@@ -8,9 +8,8 @@ import pandas as pd
 
 def get_instrument_info_by_id(ins_id: int) -> InstrumentInfo:
     """Fetches instrument information by its ID and returns an Instrument object."""
-    data = BorsdataClient().get_nordic_instruments()
-    print("DATA", data[0])
-    for item in data:
+    instruments = BorsdataClient().get_nordic_instruments()
+    for item in instruments:
         if item["insId"] == ins_id:
             return InstrumentInfo(**item)
     return None

@@ -28,8 +28,7 @@ def get_industries() -> dict:
 def get_companies_by_sector(sectorId: int) -> list[dict]:
     """Returns a list of dicts with companies for a specific sector"""
     client = BorsdataClient()
-    data = client.get_nordic_instruments()
-    instruments = data["instruments"]
+    instruments = client.get_nordic_instruments()
 
     # filter instruments on sectorId
     companies_in_sector = [ins for ins in instruments if ins["sectorId"] == sectorId]

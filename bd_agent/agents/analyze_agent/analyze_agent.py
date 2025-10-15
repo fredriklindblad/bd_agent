@@ -15,7 +15,6 @@ def run(user_prompt: str):
     """ """
     # interpret company id from user prompt
     insId = run_name_interpretation_agent(user_prompt).insId
-    print(insId)
 
     # call bd api and create df of kpis
     bd = BorsdataClient()
@@ -32,6 +31,3 @@ def run(user_prompt: str):
 
     # create report for the relevant kpis
     create_kpis_report(df_subset)
-
-    print(df_subset.head())
-    print(df_subset.info())
