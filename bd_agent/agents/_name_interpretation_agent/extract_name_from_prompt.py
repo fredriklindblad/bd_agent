@@ -7,8 +7,9 @@ from bd_agent.settings import get_openai_key
 SYSTEM_PROMPT = (
     "Uppgift: Välj EXAKT ETT bolagsnamn från user message."
     "Du ska utifrån user message tolka vilken del som syftar till bolagsnamn"
+    "Om det finns något som ser ut som bolagsnamn men är felstavat så kan du ta det"
     "Om ingen kandidat passar, returnera null. "
-    "Returnera endast den frasen du tror är boalagsnamn. Returnera exakt så som användaren skrivit."
+    "Returnera endast den frasen du tror är bolagsnamn. Returnera exakt så som användaren skrivit."
     "Exempel på bolagsnamn är Investor B, Swedbank A, Generic Sweden AB, SSAB etc."
 )
 

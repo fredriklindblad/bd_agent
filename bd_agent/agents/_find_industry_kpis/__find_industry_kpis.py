@@ -5,9 +5,17 @@ from openai import OpenAI
 from pydantic_ai import Agent
 from pydantic_ai.models.openai import OpenAIChatModel
 from ._models import KPISuggestion
+from bd_agent.agents._find_industry_kpis._helpers import validate_kpi_suggestions
 
 
-def _find_industry_kpis(insId: int):
+def _find_industry_kpis(insId: int) -> list[KPISuggestion]:
+    """funktionen är en agent som tar ett company ID som input och returnerar
+    en lista med relevanta KPI:er. För varje KPI finns info om:
+    - namn
+    - kpiId (i Börsdata)
+    - rationale
+    - sources
+    """
     # find sector name
     sectorId = bd.get_instrument_info_by_id(insId).sectorId
     sectorName = bd.get_sectors()[sectorId]
@@ -22,8 +30,9 @@ def _find_industry_kpis(insId: int):
 
     system_prompt = f"""
                         Du är en investeringsanalytiker. 
-                        Ditt mål är att identifiera de nyckeltal (KPI:er) som är mest relevanta för analys 
-                        av bolag inom sektorn "{sectorName}" och branschen "{branchName}".
+                        Ditt mål är att identifiera de 5-10 nyckeltal (KPI:er) som är mest relevanta för analys 
+                        av bolag inom sektorn "{sectorName}" och branschen "{branchName}". Fokusera på att ta reda på inte bara
+                        generella KPI:er för bolag utan i synnerhet på sektorn "{sectorName}" och branschen "{branchName}".
                         
                         Bolag som är i denna branch och som går leta relevanta KPI:er för är: {branch_list[:20]}
 
@@ -37,8 +46,11 @@ def _find_industry_kpis(insId: int):
                         2. Om inget relevant finns där, sök även efter branschspecifika analyser (exempelvis 
                         'energy sector key financial ratios site:investopedia.com' eller 'consumer goods KPIs site:morningstar.com').
 
-                        Returnera en sammanställning med:
-                        - De 5–10 nyckeltal som är mest använda i denna bransch
+                        När du har tagit fram förslag på 5-10 nyckeltal, matcha dem mot denna lista och returnera det exakta namnet enligt listan för varje.
+                        {bd.kpi_map}
+                        
+                        Returnera en sammanställning på svenska med:
+                        - De 5–10 nyckeltal som är mest använda i denna bransch (id och namn)
                         - En kort beskrivning varför de är viktiga
                         - Källa för varje nyckeltal
                         """
@@ -50,12 +62,16 @@ def _find_industry_kpis(insId: int):
         system_prompt=system_prompt,
     )
 
+    # kör agenten
     result = kpi_agent.run_sync()
-    for kpi in result.output:
-        print(kpi.name)
 
+    # # print all messages for test only
     # print(result.all_messages())
 
-    # TODO fuzzy matcha mot min egen lista - gör det med en @decorator system prompt så som du gjorde i names. Eller kan vi ta in hela på 150 namn?
+    # validate the KPI suggestion. if nothing happen its OK, else error raised
+    validate_kpi_suggestions(result.output)
 
-    # TODO agenten ska hitta secotr och bransch. Sedan ska en LLM utifrån sector branch och lsita av alla boalg i sektor/branch hitta vilka som är key parameters för branschen.
+    # result.output är en lista av KPISuggestions som har id, name, rationale och sources
+    print(result.output)
+
+    return result.output

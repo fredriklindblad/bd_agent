@@ -14,6 +14,7 @@ from bd_agent.bd.metadata import (
     get_companies_by_sector,
     get_companies_by_branch,
 )
+from bd_agent.bd._helpers import kpi_map
 
 __all__ = [
     "BorsdataClient",
@@ -24,6 +25,7 @@ __all__ = [
     "get_branches",
     "get_companies_by_sector",
     "get_companies_by_branch",
+    "kpi_map",
 ]
 
 
