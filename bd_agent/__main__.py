@@ -1,5 +1,6 @@
 """Main entry point for bd_agent application"""
 
+1
 from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())

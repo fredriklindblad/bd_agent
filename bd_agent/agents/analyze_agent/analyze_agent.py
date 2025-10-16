@@ -14,7 +14,7 @@ from ._helpers import filter_relevant_kpis, create_kpis_report
 
 
 def run(user_prompt: str):
-    """ """
+    """Function takes a user prompt and returns diagrams over relevant KPI's for the company"""
     # interpret company id from user prompt
     insId = run_name_interpretation_agent(user_prompt).insId
 
@@ -30,4 +30,4 @@ def run(user_prompt: str):
     df_subset = filter_relevant_kpis(ins_df, rel_kpis)
 
     # create report for the relevant kpis
-    create_kpis_report(df_subset)
+    create_kpis_report(df_subset, insId, rel_kpis)

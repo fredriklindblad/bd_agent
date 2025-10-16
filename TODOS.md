@@ -1,5 +1,6 @@
 ANALYZE AGENT
-1. Build report of KPI's with comparison to industry average. Plots + write the rationales for KPI choice and company info.
+1. In industry average - make sure the right period is compared and not differnet periods. Also validate all steps.
+2. Report tyhat includes diagrams plus rationales for KPI choice and company info.
 
 SCREENER AGENT
 1. Interpret (1) industry, sector and/or country, (2) KPIs
@@ -27,3 +28,9 @@ srv/
   Dockerfile
 
 Alt 2: E-post-gateway: en enkel mail-in till din backend (t.ex. via Mailgun webhook) och svar tillbaka—också UI-löst för testaren.
+
+----------------------------------------------------
+GENERAL PYTHON
+1. Use asynch and await in the app
+2. Consistency of camelCase or snake_case
+3. Fix all packages and make __init__s and imports clean
