@@ -7,8 +7,7 @@ SCREENER AGENT
 3. Return a 
 
 PORTFOLIO AGENT
-1. Make functionality that takes the current portfolio and creates outlook reminders for calendar event and invites all from my list.
-
+1. Make functionality that takes the current portfolio and creates outlook reminders for calendar event and invites all from my list. Downloads the latest Q-report, search on the internet and summarize it. Sources included. 
 
 GENERAL INVESTMENT ADVICE
 1. MVP: OPENAI SDK agent only to reply with web search
