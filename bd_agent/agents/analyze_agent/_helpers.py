@@ -35,7 +35,7 @@ def create_kpis_report(df: pd.DataFrame, insId: int, rel_kpis: list[KPISuggestio
     num_kpis = len(kpi_groups)
 
     # Determine grid size
-    cols = 3
+    cols = 2
     rows = math.ceil(num_kpis / cols)
 
     # create figure and axes

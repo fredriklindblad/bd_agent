@@ -1,6 +1,6 @@
 ANALYZE AGENT
 1. In industry average - make sure the right period is compared and not differnet periods. Also validate all steps.
-2. Output report that includes diagrams plus rationales for KPI choice and company info.
+2. Output report (in streamlit) that includes diagrams plus rationales for KPI choice and company info.
 
 SCREENER AGENT
 1. Interpret (1) industry, sector and/or country, (2) KPIs
