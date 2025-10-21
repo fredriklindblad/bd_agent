@@ -27,7 +27,7 @@ class BorsdataClient:
         response = requests.get(url)
         data = response.json()
 
-        # rename branchId to industryId
+        # renaming of branchId to industryId
         instruments = data.get("instruments", [])  # [] is security fallback if empty
         for ins in instruments:
             if "branchId" in ins:

@@ -21,12 +21,16 @@ def run_agent() -> None:  # TODO - fix print format and type hint
 
     # route forward to right agent based on intent
     if intent == "screening":
+        print("Routing to screening...")
         return agents.run_screener(user_prompt)
     elif intent == "single_stock_analysis":
+        print("Routing to single stock analysis...")
         return agents.run_analyzer(user_prompt)
     elif intent == "portfolio_analysis":
+        print("Routing to portfolio analysis...")
         pass
     elif intent == "general_investment_advice":
-        pass
+        print("Routing to general investment advice...")
+        return agents.run_advisor(user_prompt)
     else:
         return "Could not assess intent. Please retry."

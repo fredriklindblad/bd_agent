@@ -9,7 +9,7 @@ from bd_agent.agents._find_industry_kpis._helpers import validate_kpi_suggestion
 
 
 def _find_industry_kpis(insId: int) -> list[KPISuggestion]:
-    """funktionen är en agent som tar ett company ID som input och returnerar
+    """funktionen är en agent som tar ett company ID som input och returnera
     en lista med relevanta KPI:er. För varje KPI finns info om:
     - namn
     - kpiId (i Börsdata)

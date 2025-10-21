@@ -10,10 +10,10 @@ Public API:
 from .analyze_agent.analyze_agent import run as run_analyzer
 from .screener_agent.screener_agent import run as run_screener
 from .general_investment_advice.general_investment_advice import (
-    run as run_advicer,
+    run as run_advisor,
 )
 
-__all__ = ["run_analyzer", "run_screener", "run_advicer"]
+__all__ = ["run_analyzer", "run_screener", "run_advisor"]
 
 """
     FL learning notes: python package import
