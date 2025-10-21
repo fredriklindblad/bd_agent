@@ -82,11 +82,10 @@ def run(user_prompt: str) -> CompanyInterpretation:
     2) Slå upp insId/ticker deterministiskt i DF.
     3) Returnera CompanyInterpretation.
     """
-    print(f"\n🗨️  Fråga till name-interpretation-agenten: {user_prompt}")
 
     # extract name from total user prompt
     extracted_name = extract_name(user_prompt)
-    print(f"Extracted prompt part that is name is: '{extracted_name}''.")
+    # print(f"Extracted prompt part that is name is: '{extracted_name}''.")
 
     df = get_nordic_instruments_df()  # skapar en df med insId, name, ticker från BD API
     # df_new = df[df["ticker"] == "GENI"]
@@ -106,8 +105,8 @@ def run(user_prompt: str) -> CompanyInterpretation:
     # print("\n=== OUTPUT ===")
     # print(result.output)
     comp_dict = find_ticker_and_insId(result.output, df)  # TICK och INSID från df
-    print("\n=== FINAL RESULT ===")
-    print(CompanyInterpretation(**comp_dict))  # access del genom .InsId etc
+    # print("\n=== FINAL RESULT ===")
+    # print(CompanyInterpretation(**comp_dict))  # access del genom .InsId etc
     return CompanyInterpretation(**comp_dict)
 
 

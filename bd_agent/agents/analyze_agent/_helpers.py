@@ -75,9 +75,10 @@ def create_kpis_report(df: pd.DataFrame, insId: int, rel_kpis: list[KPISuggestio
         ax.grid(True)
         ax.legend(fontsize=8)
 
-    # show plot
+    # return plot
     plt.tight_layout()
-    plt.show()
+    return fig
+    # plt.show()
 
 
 # -------- internal functions --------

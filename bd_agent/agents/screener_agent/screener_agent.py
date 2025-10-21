@@ -36,4 +36,4 @@ def run(user_prompt: str):
     bd_client = bd.BorsdataClient()
     df = pd.DataFrame(bd_client.get_nordic_instruments())
 
-    return f"Returning {df.info()} from function."
+    return f"Returning {type(df)} from function."

@@ -34,3 +34,8 @@ GENERAL PYTHON
 1. Use asynch and await in the app
 2. Consistency of camelCase or snake_case
 3. Fix all packages and make __init__s and imports clean
+
+----------------------------------------------------
+GENERAL IN THE APP
+1. Streamlit for minimal UI - get plots to work
+2. Build in a RAG-system

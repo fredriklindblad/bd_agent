@@ -26,6 +26,4 @@ def run(user_prompt: str):
         ],
     )
 
-    print("output text: ", response.output_text)
-
     return response.output_text

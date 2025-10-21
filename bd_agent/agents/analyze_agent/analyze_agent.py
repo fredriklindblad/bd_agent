@@ -30,4 +30,7 @@ def run(user_prompt: str):
     df_subset = filter_relevant_kpis(ins_df, rel_kpis)
 
     # create report for the relevant kpis
-    create_kpis_report(df_subset, insId, rel_kpis)
+    fig = create_kpis_report(df_subset, insId, rel_kpis)
+    print(type(fig))
+    # fig.show()
+    return fig
