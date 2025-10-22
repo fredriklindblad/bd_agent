@@ -6,3 +6,4 @@ pydantic-ai
 pandas
 matplotlib
 dotenv
+streamlit
