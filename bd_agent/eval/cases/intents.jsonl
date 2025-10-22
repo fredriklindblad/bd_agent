@@ -1,0 +1,92 @@
+{"input": "Screena svenska banker med ROIC > 15%", "expected": "screening", "meta": {"lang": "sv", "noise": "none", "difficulty": "easy"}}
+{"input": "Show me companies in the healthcare sector with low debt", "expected": "screening", "meta": {"lang": "en", "noise": "none", "difficulty": "easy"}}
+{"input": "Vilka nordiska bolag har högst FCF yield senaste 3 åren?", "expected": "screening", "meta": {"lang": "sv", "noise": "none", "difficulty": "medium"}}
+{"input": "Screen all Swedish SaaS companies with margin above 20%", "expected": "screening", "meta": {"lang": "en", "noise": "none", "difficulty": "easy"}}
+{"input": "Filtrera ut verkstadsbolag med låg skuldsättning", "expected": "screening", "meta": {"lang": "sv", "noise": "none", "difficulty": "easy"}}
+{"input": "Find undervalued gaming companies in Europe 🎮", "expected": "screening", "meta": {"lang": "en", "noise": "emoji", "difficulty": "medium"}}
+{"input": "Visa alla bolag med P/E under 10 och ROE över 20%", "expected": "screening", "meta": {"lang": "sv", "noise": "none", "difficulty": "easy"}}
+{"input": "List companies in Sweden with market cap below 2B SEK", "expected": "screening", "meta": {"lang": "en", "noise": "none", "difficulty": "easy"}}
+{"input": "Visa svenska small caps med hög direktavkastning 💰", "expected": "screening", "meta": {"lang": "sv", "noise": "emoji", "difficulty": "medium"}}
+{"input": "Screeen nordic energy firms low P/B", "expected": "screening", "meta": {"lang": "en", "noise": "typo", "difficulty": "medium"}}
+{"input": "Vilka bolag i Danmark har stark kassaflödesutveckling?", "expected": "screening", "meta": {"lang": "sv", "noise": "none", "difficulty": "hard"}}
+{"input": "Find all companies with stable dividend and net cash pls", "expected": "screening", "meta": {"lang": "en", "noise": "slang", "difficulty": "medium"}}
+{"input": "Lista bolag med hög ROIC men låg tillväxt", "expected": "screening", "meta": {"lang": "sv", "noise": "none", "difficulty": "medium"}}
+{"input": "Filter nordic stocks by EV/EBIT < 8", "expected": "screening", "meta": {"lang": "en", "noise": "none", "difficulty": "easy"}}
+{"input": "Vilka bolag på First North har växt mest i omsättning 2024?", "expected": "screening", "meta": {"lang": "sv", "noise": "none", "difficulty": "medium"}}
+{"input": "Find companies wth high profit margins in renewable energy", "expected": "screening", "meta": {"lang": "en", "noise": "typo", "difficulty": "medium"}}
+{"input": "Visa industribolag i Sverige med stark balansräkning", "expected": "screening", "meta": {"lang": "sv", "noise": "none", "difficulty": "medium"}}
+{"input": "Which Nordic retailers r trading below book value?", "expected": "screening", "meta": {"lang": "en", "noise": "slang", "difficulty": "hard"}}
+{"input": "Filtrera fram norska bolag inom shipping med positiv trend", "expected": "screening", "meta": {"lang": "sv", "noise": "none", "difficulty": "hard"}}
+{"input": "Show undervalued Swedish tech stocks 🔍", "expected": "screening", "meta": {"lang": "en", "noise": "emoji", "difficulty": "easy"}}
+
+{"input": "Analyze Evolution", "expected": "single_stock_analysis", "meta": {"lang": "en", "noise": "none", "difficulty": "easy"}}
+{"input": "Analysera Investor", "expected": "single_stock_analysis", "meta": {"lang": "sv", "noise": "none", "difficulty": "easy"}}
+{"input": "What do you think about Volvo AB?", "expected": "single_stock_analysis", "meta": {"lang": "en", "noise": "none", "difficulty": "easy"}}
+{"input": "Hur ser framtidsutsikterna ut för Hexagon?", "expected": "single_stock_analysis", "meta": {"lang": "sv", "noise": "none", "difficulty": "medium"}}
+{"input": "Is Embracer a buy or sell rn?", "expected": "single_stock_analysis", "meta": {"lang": "en", "noise": "slang", "difficulty": "easy"}}
+{"input": "Ge mig analys av Castellum efter senaste rapporten", "expected": "single_stock_analysis", "meta": {"lang": "sv", "noise": "none", "difficulty": "medium"}}
+{"input": "Tell me about H&M’s valuation and growth outlook", "expected": "single_stock_analysis", "meta": {"lang": "en", "noise": "none", "difficulty": "medium"}}
+{"input": "Hur mår Bokus rent finansiellt just nu? 📊", "expected": "single_stock_analysis", "meta": {"lang": "sv", "noise": "emoji", "difficulty": "medium"}}
+{"input": "Look at Addtech fundamentls", "expected": "single_stock_analysis", "meta": {"lang": "en", "noise": "typo", "difficulty": "easy"}}
+{"input": "Analys av Evolution AB efter Q2", "expected": "single_stock_analysis", "meta": {"lang": "sv", "noise": "none", "difficulty": "medium"}}
+{"input": "Vad har Lifco för lönsamhet över tid?", "expected": "single_stock_analysis", "meta": {"lang": "sv", "noise": "none", "difficulty": "medium"}}
+{"input": "Check out Intrum’s debt lvls", "expected": "single_stock_analysis", "meta": {"lang": "en", "noise": "slang", "difficulty": "easy"}}
+{"input": "Kan du jämföra Addnode med Vitec?", "expected": "single_stock_analysis", "meta": {"lang": "sv", "noise": "none", "difficulty": "hard"}}
+{"input": "Evaluate Betsson’s growth n profitability", "expected": "single_stock_analysis", "meta": {"lang": "en", "noise": "slang", "difficulty": "medium"}}
+{"input": "Hur påverkas Storskogen av ränteläget?", "expected": "single_stock_analysis", "meta": {"lang": "sv", "noise": "none", "difficulty": "medium"}}
+{"input": "Analyze Peab’s cashflow trend 💵", "expected": "single_stock_analysis", "meta": {"lang": "en", "noise": "emoji", "difficulty": "medium"}}
+{"input": "Vad tycker du om Swedish Match innan uppköpet?", "expected": "single_stock_analysis", "meta": {"lang": "sv", "noise": "none", "difficulty": "hard"}}
+{"input": "Is Genova worth buyng now?", "expected": "single_stock_analysis", "meta": {"lang": "en", "noise": "typo", "difficulty": "easy"}}
+{"input": "Hur värderas Storytel jämfört med konkurrenter?", "expected": "single_stock_analysis", "meta": {"lang": "sv", "noise": "none", "difficulty": "medium"}}
+{"input": "Look into SAS after restructuring plz", "expected": "single_stock_analysis", "meta": {"lang": "en", "noise": "slang", "difficulty": "medium"}}
+
+{"input": "Jämför min portfölj mot OMXSGI", "expected": "portfolio_analysis", "meta": {"lang": "sv", "noise": "typo", "difficulty": "medium"}}
+{"input": "Analyze my portoflio performance last month", "expected": "portfolio_analysis", "meta": {"lang": "en", "noise": "typo", "difficulty": "easy"}}
+{"input": "Vilken exponering har jag mot tech?", "expected": "portfolio_analysis", "meta": {"lang": "sv", "noise": "none", "difficulty": "easy"}}
+{"input": "Check if my holdings are diversified enough", "expected": "portfolio_analysis", "meta": {"lang": "en", "noise": "none", "difficulty": "medium"}}
+{"input": "Hur mycket av min portfölj ligger i fastigheter?", "expected": "portfolio_analysis", "meta": {"lang": "sv", "noise": "none", "difficulty": "easy"}}
+{"input": "Compare my portfolio to OMX30", "expected": "portfolio_analysis", "meta": {"lang": "en", "noise": "none", "difficulty": "easy"}}
+{"input": "Räkna ut min portföljens genomsnittliga P/E-tal", "expected": "portfolio_analysis", "meta": {"lang": "sv", "noise": "none", "difficulty": "medium"}}
+{"input": "How risky is my portolio based on volatility?", "expected": "portfolio_analysis", "meta": {"lang": "en", "noise": "typo", "difficulty": "medium"}}
+{"input": "Vilken avkastning har jag fått i år?", "expected": "portfolio_analysis", "meta": {"lang": "sv", "noise": "none", "difficulty": "easy"}}
+{"input": "Compare my portfolio to S&P500 📊", "expected": "portfolio_analysis", "meta": {"lang": "en", "noise": "emoji", "difficulty": "easy"}}
+{"input": "Är min portfölj för tungt viktad mot Sverige?", "expected": "portfolio_analysis", "meta": {"lang": "sv", "noise": "none", "difficulty": "medium"}}
+{"input": "Show my sector alloc pls", "expected": "portfolio_analysis", "meta": {"lang": "en", "noise": "slang", "difficulty": "easy"}}
+{"input": "Visa hur mycket varje bolag bidragit till totalavkastning", "expected": "portfolio_analysis", "meta": {"lang": "sv", "noise": "none", "difficulty": "hard"}}
+{"input": "Check overlap btw my funds and stocks", "expected": "portfolio_analysis", "meta": {"lang": "en", "noise": "slang", "difficulty": "medium"}}
+{"input": "Jämför min portfölj med en 60/40-strategi", "expected": "portfolio_analysis", "meta": {"lang": "sv", "noise": "none", "difficulty": "hard"}}
+{"input": "How correlated are my holdings rn?", "expected": "portfolio_analysis", "meta": {"lang": "en", "noise": "slang", "difficulty": "hard"}}
+{"input": "Visa avkastning per sektor i min portfölj", "expected": "portfolio_analysis", "meta": {"lang": "sv", "noise": "none", "difficulty": "medium"}}
+{"input": "Calculate beta 4 my total portfolio", "expected": "portfolio_analysis", "meta": {"lang": "en", "noise": "slang", "difficulty": "hard"}}
+{"input": "Är min portfölj mer riskfylld än index?", "expected": "portfolio_analysis", "meta": {"lang": "sv", "noise": "none", "difficulty": "medium"}}
+{"input": "Break down my portfolioby country", "expected": "portfolio_analysis", "meta": {"lang": "en", "noise": "typo", "difficulty": "easy"}}
+
+{"input": "Hur ska jag investera 100 000 kr på 5 års sikt?", "expected": "investment_advice", "meta": {"lang": "sv", "noise": "none", "difficulty": "medium"}}
+{"input": "What should I invest in during high inflation?", "expected": "investment_advice", "meta": {"lang": "en", "noise": "none", "difficulty": "medium"}}
+{"input": "Ge mig tips på trygg långsiktig investering 🙏", "expected": "investment_advice", "meta": {"lang": "sv", "noise": "emoji", "difficulty": "easy"}}
+{"input": "Should I buy or rent my apartment instead?", "expected": "investment_advice", "meta": {"lang": "en", "noise": "none", "difficulty": "medium"}}
+{"input": "Vilken fondtyp passar bäst för pensionen?", "expected": "investment_advice", "meta": {"lang": "sv", "noise": "none", "difficulty": "medium"}}
+{"input": "Help me rebalance my investmnts", "expected": "investment_advice", "meta": {"lang": "en", "noise": "typo", "difficulty": "medium"}}
+{"input": "Är det smart att amortera eller investera just nu?", "expected": "investment_advice", "meta": {"lang": "sv", "noise": "none", "difficulty": "medium"}}
+{"input": "How can I start invsting with 500 euros?", "expected": "investment_advice", "meta": {"lang": "en", "noise": "typo", "difficulty": "easy"}}
+{"input": "Jag vill bygga en stabil portfölj för framtiden", "expected": "investment_advice", "meta": {"lang": "sv", "noise": "none", "difficulty": "easy"}}
+{"input": "Give me practical investing tips 4 beginners", "expected": "investment_advice", "meta": {"lang": "en", "noise": "slang", "difficulty": "easy"}}
+{"input": "Hur ska jag invstera efter en börsnedgång?", "expected": "investment_advice", "meta": {"lang": "sv", "noise": "typo", "difficulty": "medium"}}
+{"input": "Should I hold cash or bonds now?", "expected": "investment_advice", "meta": {"lang": "en", "noise": "none", "difficulty": "medium"}}
+{"input": "Vilken strategi passar bäst om jag vill ta låg risk?", "expected": "investment_advice", "meta": {"lang": "sv", "noise": "none", "difficulty": "easy"}}
+{"input": "Is it a good time 2 buy index funds?", "expected": "investment_advice", "meta": {"lang": "en", "noise": "slang", "difficulty": "easy"}}
+{"input": "Hur kan jag diversifiera bättre?", "expected": "investment_advice", "meta": {"lang": "sv", "noise": "none", "difficulty": "medium"}}
+{"input": "I wanna invest monthly, what’s a good plan?", "expected": "investment_advice", "meta": {"lang": "en", "noise": "slang", "difficulty": "medium"}}
+{"input": "Vad ska jag göra om räntan stiger?", "expected": "investment_advice", "meta": {"lang": "sv", "noise": "none", "difficulty": "medium"}}
+{"input": "Should I increase my exposure 2 US stocks?", "expected": "investment_advice", "meta": {"lang": "en", "noise": "slang", "difficulty": "medium"}}
+{"input": "Hur kan jag investera hållbart 💚", "expected": "investment_advice", "meta": {"lang": "sv", "noise": "emoji", "difficulty": "easy"}}
+{"input": "Ge mig råd kring hur jag ska tänka kring fonder", "expected": "investment_advice", "meta": {"lang": "sv", "noise": "none", "difficulty": "medium"}}
+
+{"input": "hjälp mig skriva mejl till chefen", "expected": "none", "meta": {"lang": "sv", "noise": "none", "difficulty": "easy"}}
+{"input": "How tall is the Eiffel Tower?", "expected": "none", "meta": {"lang": "en", "noise": "none", "difficulty": "easy"}}
+{"input": "Vad blir vädret i Stockholm i helgen? ☔", "expected": "none", "meta": {"lang": "sv", "noise": "emoji", "difficulty": "easy"}}
+{"input": "Skriv ett recept på pannkakor", "expected": "none", "meta": {"lang": "sv", "noise": "none", "difficulty": "easy"}}
+{"input": "Tell me a joke 😂", "expected": "none", "meta": {"lang": "en", "noise": "emoji", "difficulty": "easy"}}
+{"input": "Översätt 'good morning' till svenska", "expected": "none", "meta": {"lang": "sv", "noise": "none", "difficulty": "easy"}}
+{"input": "Vilka filmer går på bio just nu?", "expected": "none", "meta": {"lang": "sv", "noise": "none", "difficulty": "easy"}}
+{"input": "Can u fix my Python code?", "expected": "none", "meta": {"lang": "sv", "noise": "none", "difficulty": "easy"}}

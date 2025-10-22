@@ -52,9 +52,11 @@ history_slot = st.expander("History", expanded=False)
 # update the intent when writing and exit the input window
 if prompt and prompt.strip():
     try:
-        intent_res = intent_classifier(prompt).intent
+        intent_res = intent_classifier(prompt)
         with intent_slot:
-            st.info(f"Detected intent: **{intent_res}**")
+            st.info(
+                f"Detected intent: **{intent_res.intent}**\nConfidence: **{intent_res.confidence}"
+            )
     except Exception as e:
         with intent_slot:
             st.error(f"Could not classify intent: {e}.")

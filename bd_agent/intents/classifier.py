@@ -34,7 +34,7 @@ SYSTEM_PROMPT = """
                     3. "portfolio_analysis" — if the user wants to analyze a portfolio or multiple holdings
                     (e.g., asking about diversification or opinions on multiple stocks).
 
-                    4. "general_investment_advice" — if the user wants general investment advice or strategies.
+                    4. "investment_advice" — if the user wants investment advice or strategies or gain knowledge about finance, stocks or investments.
 
                     Your task is to classify the user's intent based on their prompt.
                     You should also provide a brief reasoning for your classification. Be concise.
