@@ -9,7 +9,7 @@ import argparse
 import subprocess
 from pathlib import Path
 
-from bd_agent.eval import read_jsonl
+import bd_agent.eval
 
 
 def main():
@@ -37,4 +37,4 @@ def main():
 
 if __name__ == "__main__":
     # main()
-    read_jsonl()
+    bd_agent.eval.run_intents_eval()

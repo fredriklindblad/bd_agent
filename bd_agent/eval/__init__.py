@@ -5,6 +5,6 @@ Public API:
 -
 """
 
-from bd_agent.eval.intents_eval import read_jsonl
+from .intents_eval import run_intents_eval
 
-__all__ = ["read_jsonl"]
+__all__ = ["run_intents_eval"]

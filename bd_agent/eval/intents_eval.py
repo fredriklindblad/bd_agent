@@ -1,28 +1,78 @@
 """Module is eval of intents classifier"""
 
 import json
-
-from pathlib import Path
-
-# constans for jsonl path and artifacts direction
-JSONL_PATH = Path("eval/cases/intents.json")
-ARTIFACTS_DIR = Path("eval/artifacts")
+import os
+from pathlib import Path, WindowsPath
+from importlib import resources as ir
+from typing import Iterable
 
 
-# read golden set i jsonl
-def read_jsonl(path: Path) -> list[dict]:
-    """reads jsonl and returns a list of all rows as dicts.
-    I.e. jsonl -> Python Dict reader"""
+# --- Artifacts location ----
+def _project_root() -> Path:
+    return Path(__file__).resolve().parents[2]
 
-    rows = []
-    with path.open("r", encoding="utf-8") as f:
-        for line in f:
-            line.strip()
-            if not line:
-                continue
-            rows.append(json.loads(line))
-    print(rows)
+
+def get_artifacts_dir() -> Path:
+    """Returns the artifacts directory"""
+    root = _project_root()
+    print(type(root / "bd_agent" / "eval" / "artifacts"))
+    print(root / "bd_agent" / "eval" / "artifacts")
+    return root / "bd_agent" / "eval" / "artifacts"
+
+
+def ensure_artifacts_dir(path: Path) -> Path:
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+# ---- Errors ----
+class EvalDataError(RuntimeError):
+    pass
+
+
+# ---- Resources ----
+def _intents_resource() -> WindowsPath:
+    """Returns a Traversable to bd_agent/eval/cases/intents.jsonl inside package"""
+    return ir.files(__package__).joinpath("cases", "intents.jsonl")
+
+
+# def read_jsonl(path: Path) -> list[dict]:
+#     """reads jsonl and returns a list of all rows as dicts. I.e. jsonl -> Python Dict"""
+#     rows: list[dict] = []
+#     with path.open("r", encoding="utf-8") as f:
+#         for line in f:
+#             line.strip()
+#             if not line:
+#                 continue
+#             rows.append(json.loads(line))
+#     print("Rows from read jsonl: ", rows)
+#     return rows
+
+
+def write_jsonl(path: Path, rows: Iterable[dict]):
+    """Writes to jsonl. Used for eval results."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="\n") as f:
+        for obj in rows:
+            f.write(json.dumps(obj, ensure_ascii=False) + "\n")
+
+
+def load_default_intents() -> list[dict]:
+    """Loads the golden set"""
+    res = _intents_resource()
+    if not res.exists():
+        raise EvalDataError(
+            "Packaged golden set missing. Ensure pacakge-data is included."
+        )
+    with res.open("r", encoding="utf-8") as f:
+        rows = [json.loads(line) for line in f if line.strip()]
+    if not rows:
+        raise EvalDataError("Golden set it empty.")
     return rows
 
 
-read_jsonl(JSONL_PATH)
+# TODO delete TESTONLY
+def run_intents_eval():
+    data = load_default_intents()
+    out_path = ensure_artifacts_dir(get_artifacts_dir()) / "probe.jsonl"
+    write_jsonl(out_path, data[:2])
