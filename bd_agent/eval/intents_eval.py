@@ -75,4 +75,5 @@ def load_default_intents() -> list[dict]:
 def run_intents_eval():
     data = load_default_intents()
     out_path = ensure_artifacts_dir(get_artifacts_dir()) / "probe.jsonl"
+    print(out_path)
     write_jsonl(out_path, data[:2])

@@ -1,4 +1,4 @@
 # Ignore local environment files
 .env
 .env.*
-.README.md
+.TODOS.md
