@@ -1,4 +1,15 @@
-# Ignore local environment files
+# Python cache
+__pycache__
+
+# Local virtual environments
+.venv
+
+# IDEs and editors
+.vscode
+
+# Environments and secrets
 .env
 .env.*
+
+#Personal notes
 .TODOS.md
