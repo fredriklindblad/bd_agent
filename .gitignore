@@ -1,15 +1,15 @@
 # Python cache
-__pycache__
+__pycache__/
 
 # Local virtual environments
-.venv
+.venv/
 
 # IDEs and editors
-.vscode
+.vscode/
 
 # Environments and secrets
 .env
 .env.*
 
 #Personal notes
-.TODOS.md
+TODOS.md
