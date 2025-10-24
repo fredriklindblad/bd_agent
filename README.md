@@ -57,10 +57,10 @@ Show portfolio overview for EVO, SAGA B, and BOKUS
 ---
 
 ## License
-MIT © [Your Name or Company]
+MIT © Fredrik Lindblad
 
 ---
 
 ## Contact
-For questions or feedback: [your.email@example.com]  
-GitHub: [https://github.com/yourprofile](https://github.com/yourprofile)
+For questions or feedback: [fredrik-lindblad@hotmail.com]  
+GitHub: [https://github.com/fredriklindblad](https://github.com/fredriklindblad)
