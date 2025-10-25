@@ -2,9 +2,6 @@
 
 from bd_agent.intents import intent_classifier
 import bd_agent.agents as agents
-from bd_agent.agents._find_industry_kpis.__find_industry_kpis import (
-    _find_industry_kpis,
-)
 import bd_agent.bd as bd
 
 
@@ -12,9 +9,6 @@ def run_agent(user_prompt) -> None:  # TODO - fix print format and type hint
     """Runs the agent through intent and direct to the right agent.
     Then prints the output.
     """
-    # TODO either use below user_prompt or user_prompt as argument to run_agent above
-    # # Take input from user
-    # user_prompt = input("What can I help you with today?\n>>")
 
     # Classify user prompt
     intent = intent_classifier(user_prompt).intent

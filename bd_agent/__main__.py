@@ -1,4 +1,10 @@
-"""Main entry point for bd_agent application"""
+"""
+Main entry point for bd_agent.
+
+Usage:
+  python -m bd_agent ui
+  python -m bd_agent cli
+"""
 
 # load dotenv to get api keys
 from dotenv import load_dotenv, find_dotenv
@@ -36,5 +42,5 @@ def main():
 
 
 if __name__ == "__main__":
-    # main()
-    bd_agent.eval.run_intents_eval()
+    main()
+    # bd_agent.eval.run_intents_eval()

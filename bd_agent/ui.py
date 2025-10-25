@@ -54,9 +54,10 @@ if prompt and prompt.strip():
     try:
         intent_res = intent_classifier(prompt)
         with intent_slot:
-            st.info(
-                f"Detected intent: **{intent_res.intent}**\nConfidence: **{intent_res.confidence}"
-            )
+            st.info(f"""
+                    **Detected intent:** {intent_res.intent}     
+                    **Confidence:** {intent_res.confidence}
+                    """)
     except Exception as e:
         with intent_slot:
             st.error(f"Could not classify intent: {e}.")
