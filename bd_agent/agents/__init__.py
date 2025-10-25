@@ -9,7 +9,7 @@ Public API:
 
 from .analyze_agent.analyze_agent import run as run_analyzer
 from .screener_agent.screener_agent import run as run_screener
-from .general_investment_advice.general_investment_advice import (
+from .advisor_agent.general_investment_advice import (
     run as run_advisor,
 )
 

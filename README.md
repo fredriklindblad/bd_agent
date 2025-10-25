@@ -1,8 +1,6 @@
 # BD Agent  
 ![Python](https://img.shields.io/badge/Python-3.11+-blue) ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 
-*A portfolio project that uses AI to analyze and screen Nordic stocks using Börsdata data and OpenAI models.*
-
 **AI-powered stock analysis and screening tool** built with **Börsdata API**, **OpenAI**, and **PydanticAI**.
 
 BD Agent combines financial data with large language models to:
@@ -42,9 +40,10 @@ streamlit run bd_agent/ui.py
 
 ## Example prompts
 ```
-"Analyze Atlas Copco"
-"Screen Swedish banks"
-"Show portfolio overview"
+"Analyze Atlas Copco" -> analyze_agent
+"Screen Swedish banks" -> screener_agent
+"Show portfolio overview" -> portfolio_agent
+"Advise on how to balance between cash holdings and stock investments" -> advisor_agent
 ```
 
 ---
