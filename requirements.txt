@@ -1,9 +1,18 @@
-openai
-requests
-python-dotenv
-pydantic
-pydantic-ai
-pandas
-matplotlib
-dotenv
-streamlit
+# Core AI and data libraries
+openai>=2.0.0
+pydantic>=2.8.0
+pydantic-ai>=0.1.0
+
+# Data handling and visualization
+pandas>=2.3.0
+numpy>=2.3.0
+matplotlib>=3.10.0
+
+# Environment and configuration
+python-dotenv>=1.0.1
+
+# Web UI
+streamlit>=1.36.0
+
+# Networking
+requests>=2.32.0
