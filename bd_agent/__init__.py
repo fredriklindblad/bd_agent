@@ -19,11 +19,11 @@ You can run BD Agent in different modes:
 
 Quick Examples
 --------------
-```python
 >>> import bd_agent
 >>> python -m bd_agent ui
 -> Streamlit UI started
 
+```python
 >>> from bd_agent import run_agent
 >>> run_agent("Analyze Evolution")
 -> showing Matplotlib.Figure
