@@ -14,10 +14,3 @@ from .advisor_agent.general_investment_advice import (
 )
 
 __all__ = ["run_analyzer", "run_screener", "run_advisor"]
-
-"""
-    FL learning notes: python package import
-    använd __init__.py i mappen för publikt API 
-    om du kör import * så kommer alla moduler som börjar med _ (underscore) att ignoreras.
-    
-"""

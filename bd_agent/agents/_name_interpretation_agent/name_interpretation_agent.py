@@ -85,11 +85,8 @@ def run(user_prompt: str) -> CompanyInterpretation:
 
     # extract name from total user prompt
     extracted_name = extract_name(user_prompt)
-    # print(f"Extracted prompt part that is name is: '{extracted_name}''.")
 
     df = get_nordic_instruments_df()  # skapar en df med insId, name, ticker från BD API
-    # df_new = df[df["ticker"] == "GENI"]
-    # print(df_new.head())
     names = df["name"].values.tolist()  # skapar en lista med alla bolagsnamn
     best_matches = find_best_matches(extracted_name, names)  # hitta top-N matchningar
     deps = Deps(best_matches=best_matches)  # best matches är en lista med str
@@ -158,36 +155,3 @@ def find_ticker_and_insId(company_name, df) -> dict:
     selected_row = df.loc[df["name"] == company_name]
     company_dict = selected_row.iloc[0].to_dict()
     return company_dict
-
-
-""" accessa delar i output och i egna klasser """
-# Om det är en lista så använd[0] etc,
-# om det är en dict så använd .get("key") etc.,
-# om det är en ResponseModel tex så använd .output eller .all_messages() etc. för att få fram attribut eller metoder som kalssen har.
-# Använd print(dir(...)) för att se vad som finns.
-
-# TODO - kolla upp RunContext[Deps] - vad gör den och vrf blir inget objekt Deps class?
-
-
-"""hur agenten fungerar, dvs tolkning av result.all_messages()"""
-# 1. ModelRequest:  agenten skickar user prompt och systm prompt tsm med tillg tool info
-# 2. ModelResponse: LLM svarar med text som innehåller tool call, anropar tool
-# 2b. ToolCallPart: innehåller tool name och args som LLM bestämt
-# 3. ModelRequest:  agenten anropar tool med args och skickar svar till LLM
-# 4. ModelResponse: LLM svarar med ToolCallPart, vill anropa tool igen
-# 5. ModelRequest:  agenten anropar tool med args och skickar svar till LLM
-# 6. ModelResponse: LLM kallar på output tool och fyller enligt output typ
-# 7. ModelRequest: output funktionen körs i Python och "Final result processed." returneras
-#
-#
-
-""" hur agenten fungerar vad gäller användade av tools """
-# 1a. om jag skriver i system prompt "får inte" använda tool_1 så används det inte
-# 1b. om jag skriver "måste" använda tool_1 så används det
-# 2. annat som LLM tittar på när d3et avgör om tool ska användas
-#   a. namn på tool
-#   b. doc string i tool
-#   c. output type i tool (hjälper det för agentens output type så använder gärna)
-#   d. cost för att anropa, är det en tung eller lätt funktion?
-#
-#

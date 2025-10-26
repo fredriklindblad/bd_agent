@@ -65,13 +65,7 @@ def _find_industry_kpis(insId: int) -> list[KPISuggestion]:
     # kör agenten
     result = kpi_agent.run_sync()
 
-    # # print all messages for test only
-    # print(result.all_messages())
-
     # validate the KPI suggestion. if nothing happen its OK, else error raised
     validate_kpi_suggestions(result.output)
-
-    # # result.output är en lista av KPISuggestions som har id, name, rationale och sources
-    # print(result.output)
 
     return result.output
