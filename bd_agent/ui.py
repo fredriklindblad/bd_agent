@@ -22,7 +22,7 @@ from bd_agent.intents import intent_classifier
 st.set_page_config(page_title="BD Agent", page_icon="📈", layout="centered")
 st.title("📈 BD Agent – Minimal UI")
 st.caption(
-    "BD Agent is a private investment bot. It can help you with instrument analysis, screening and give general investement advice."
+    "BD Agent is a private investment bot. It can help you with instrument analysis, screening and give general investment advice."
 )
 
 # Set input area
@@ -35,7 +35,7 @@ prompt = st.text_area(
 # Set columns for run, show raw output and save chat history
 col1, col2 = st.columns([1, 3])
 with col1:
-    run_btn = st.button("Run", type="primary", use_container_width=True)
+    run_btn = st.button("Run", type="primary", width="stretch")
 with col2:
     keep_history = st.toggle("Save chat history", value=True)
 
@@ -79,10 +79,19 @@ def _iterable(obj: Any) -> bool:
     return isinstance(obj, (list, tuple))
 
 
+def _ensure_figsize(fig: Figure, size=(10, 6), dpi=120) -> Figure:
+    """Help function to ensure figure size"""
+    fig.set_size_inches(*size, forward=True)
+    fig.set_dpi(dpi)
+    fig.tight_layout()
+    return fig
+
+
 def _render_one(obj: Any) -> None:
     """Renders one based on what type it is, e.g. plot, dataframe etc."""
     if _is_matplotlib_figure(obj):
-        st.pyplot(obj)
+        # obj = _ensure_figsize(obj)
+        st.pyplot(obj, width="content")
         return
 
     # Fallback: text
@@ -96,7 +105,7 @@ def _render_result(obj: Any) -> None:
         if all(_is_matplotlib_figure(x) for x in obj):
             for i, fig in enumerate(obj, start=1):
                 st.subheader(f"Chart {i}")
-                st.pyplot(fig)
+                st.pyplot(fig, use_container_width="content")
             return
     # Else render object
     _render_one(obj)
