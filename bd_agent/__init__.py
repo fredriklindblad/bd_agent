@@ -11,21 +11,16 @@ Public API
 
 Command-line entry
 ------------------
-You can run BD Agent in different modes:
-
+You can run BD Agent in different modes. When in project directory use:
     python -m bd_agent ui          # Launch Streamlit interface
     python -m bd_agent cli         # Run in CLI mode
     python -m bd_agent eval-intents  # Run intent evaluation
 
-Quick Examples
+Quick import example
 --------------
->>> import bd_agent
->>> python -m bd_agent ui
--> Streamlit UI started
-
 ```python
 >>> from bd_agent import run_agent
->>> run_agent("Analyze Evolution")
+>>> run_agent("Analyze Swedbank")
 -> showing Matplotlib.Figure
 """
 
@@ -44,11 +39,25 @@ except metadata.PackageNotFoundError:
 
 __author__ = "Fredrik Lindblad"
 
+# ---------------------------------------------------------------
+# Public API
+# ---------------------------------------------------------------
+
+from dotenv import load_dotenv, find_dotenv
+import os
+
+load_dotenv(find_dotenv())
+if not os.getenv("OPENAI_API_KEY"):
+    raise RuntimeError(
+        "OPENAI_API_KEY not found in environment variables."
+        " Please set it in your .env file or environment."
+    )
+
 
 # ---------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------
-def run_agent(prompt: str, *, return_raw: bool = False) -> dict[str, Any] | str:
+def run_agent(prompt: str) -> dict[str, Any] | str:
     """
     Route the given user prompt to the appropriate agent and return the response.
 
@@ -56,13 +65,11 @@ def run_agent(prompt: str, *, return_raw: bool = False) -> dict[str, Any] | str:
     ----------
     prompt : str
         The user's natural-language query (e.g., "Screen Swedish banks").
-    return_raw : bool, optional
-        If True, return the structured response (dict) instead of formatted text.
 
     Returns
     -------
-    dict | str
-        The agent's output, either as a formatted string or structured dictionary.
+    str | Matplotlib.Figure
+        The agent's output is either a text response or a Matplotlib figure.
 
     Notes
     -----
@@ -71,4 +78,4 @@ def run_agent(prompt: str, *, return_raw: bool = False) -> dict[str, Any] | str:
     """
     from .router import run_agent as _run_agent
 
-    return _run_agent(prompt, return_raw=return_raw)
+    return _run_agent(prompt)
