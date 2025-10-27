@@ -3,3 +3,6 @@ name = "bd_agent"
 version = "1.0.0"
 description = "AI-driven stock analysis agent built with OpenAI, Pydantic and Streamlit."
 authors = [{ name = "Fredrik Lindblad" }]
+
+[tool.setuptools.packages.find]
+where = ["src"]

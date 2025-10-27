@@ -9,7 +9,7 @@ from typing import Iterable
 
 # --- Artifacts location ----
 def _project_root() -> Path:
-    return Path(__file__).resolve().parents[2]
+    return Path(__file__).resolve().parents[3]
 
 
 def get_artifacts_dir() -> Path:
@@ -32,21 +32,9 @@ class EvalDataError(RuntimeError):
 
 # ---- Resources ----
 def _intents_resource() -> WindowsPath:
-    """Returns a Traversable to bd_agent/eval/cases/intents.jsonl inside package"""
-    return ir.files(__package__).joinpath("cases", "intents.jsonl")
-
-
-# def read_jsonl(path: Path) -> list[dict]:
-#     """reads jsonl and returns a list of all rows as dicts. I.e. jsonl -> Python Dict"""
-#     rows: list[dict] = []
-#     with path.open("r", encoding="utf-8") as f:
-#         for line in f:
-#             line.strip()
-#             if not line:
-#                 continue
-#             rows.append(json.loads(line))
-#     print("Rows from read jsonl: ", rows)
-#     return rows
+    """Returns a Traversable to bd_agent/eval/reference_sets/golden_intents.jsonl inside package"""
+    base = ir.files("bd_agent.eval")
+    return base.joinpath("reference_sets", "golden_intents.jsonl")
 
 
 def write_jsonl(path: Path, rows: Iterable[dict]):
@@ -75,5 +63,4 @@ def load_default_intents() -> list[dict]:
 def run_intents_eval():
     data = load_default_intents()
     out_path = ensure_artifacts_dir(get_artifacts_dir()) / "probe.jsonl"
-    print(out_path)
     write_jsonl(out_path, data[:2])
