@@ -1,10 +1,94 @@
 """Module is eval of intents classifier"""
 
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+from bd_agent.eval.io import load_default_intents, run_dir
+from bd_agent.intents.classifier import IntentClassification, intent_classifier
+
 
 @dataclass
+class IntentEvalRow:
+    """
+    Represents a single evaluation example for intent classification.
 
-# TODO delete TESTONLY
-def run_intents_eval():
-    data = load_default_intents()
-    out_path = ensure_artifacts_dir(get_artifacts_dir()) / "probe.jsonl"
-    write_jsonl(out_path, data[:2])
+    Attributes:
+        user_prompt: The raw user input sent to the agent.
+        gold_intent: The correct, expected intent label from the golden set.
+        pred_intent: The predicted intent label from the classifier.
+        confidence: Model confidence score for the prediction (0–1).
+        meta: Additional metadata (e.g., language, difficulty, source).
+    """
+
+    input: str
+    expected: str
+    predicted: str
+    confidence: float
+    meta: dict[str, Any]
+
+
+def _predict(prompt: str) -> IntentClassification:
+    """Gets intent prediction from the classifier
+    Returns IntentClassification object with .intent, .confidence, .reasoning"""
+    out = intent_classifier(prompt)
+    return out
+
+
+def _build_predictions(rows: list[dict]) -> list[IntentEvalRow]:
+    """Builds predictions for a list of reference rows.
+    Each row is a dict with keys: "input", "expected", "meta"
+    Returns a list of IntentEvalRow objects.
+    """
+    preds: list[IntentEvalRow] = []
+    for r in rows:
+        out = _predict(r["input"])
+        preds.append(
+            IntentEvalRow(
+                input=r["input"],
+                expected=r["expected"],
+                predicted=out.intent,
+                confidence=out.confidence,
+                meta=r.get("meta", {}),
+            )
+        )
+    return preds
+
+
+def create_report(preds: list[IntentEvalRow]) -> dict[str, Any]:
+    """Creates a report with below metrics.
+
+    Overall metrics:
+        accuracy,
+        macro F1-score,
+        weighted F1-score,
+        macro precision,
+        macro recall,
+        confusion matrix
+        coverage-accuracy curve
+
+    Per-intent metrics:
+        support,
+        accuracy,
+        precision,
+        recall,
+        F1-score,
+        confidence mean
+
+    """
+    # TODO implement craete report and metrics calculation
+    pass
+
+
+def run() -> Path:
+    """Runs intents eval and returns path to results file"""
+    rows = load_default_intents()[:25]  # TODO limit for testing
+    preds = _build_predictions(rows)
+    print(preds)
+
+    report = create_report(preds)  # TODO implement
+    outdir = run_dir(label="intents-eval")
+    out_path = outdir / "intent_report.json"
+    # write_json(out_path, report)  # TODO implement
+
+    return out_path
