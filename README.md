@@ -17,11 +17,15 @@ BD Agent combines financial data with large language models to:
 ```bash
 git clone <repo-url>
 cd bd_agent
+python -m venv .venv
+.\.venv\Scripts\activate
+python -m pip install --upgrade pip setuptools
+python -m pip install .e[dev]
 ```
 
 ### 2. Install dependencies
 ```bash
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
 ### 3. Add your API keys

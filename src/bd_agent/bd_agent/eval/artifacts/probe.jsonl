@@ -1,0 +1,2 @@
+{"input": "Screena svenska banker med ROIC > 15%", "expected": "screening", "meta": {"lang": "sv", "noise": "none", "difficulty": "easy"}}
+{"input": "Show me companies in the healthcare sector with low debt", "expected": "screening", "meta": {"lang": "en", "noise": "none", "difficulty": "easy"}}

@@ -1,0 +1,7 @@
+Metadata-Version: 2.4
+Name: bd_agent
+Version: 1.0.0
+Summary: AI-driven stock analysis agent built with OpenAI, Pydantic and Streamlit.
+Author: Fredrik Lindblad
+License-File: LICENSE
+Dynamic: license-file
