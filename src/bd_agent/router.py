@@ -5,7 +5,7 @@ import bd_agent.agents as agents
 import bd_agent.bd as bd
 
 
-def run_agent(user_prompt) -> None:  # TODO - fix print format and type hint
+def run_agent(user_prompt) -> None:
     """Runs the agent through intent and direct to the right agent.
     Then prints the output.
     """
