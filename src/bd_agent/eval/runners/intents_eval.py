@@ -82,7 +82,7 @@ def create_report(preds: list[IntentEvalRow]) -> dict[str, Any]:
 
 def run() -> Path:
     """Runs intents eval and returns path to results file"""
-    rows = load_default_intents()[:25]  # TODO limit for testing
+    rows = load_default_intents()[:25]  # TODO limit is for testing
     preds = _build_predictions(rows)
     print(preds)
 
