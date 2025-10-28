@@ -1,11 +1,11 @@
 """Streamlit application for minimal UI"""
 
-import sys
+import sys, json
 from pathlib import Path
 from typing import Any, Iterable, List
 
 # Add parent directory to sys before any bd_agent imports
-project_root = str(Path(__file__).parent.parent)
+project_root = Path(__file__).parent.parent
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
@@ -63,6 +63,40 @@ if prompt and prompt.strip():
             st.error(f"Could not classify intent: {e}.")
 else:
     intent_slot.empty()
+
+# --- EVAL RESULTS SECTION ---
+st.markdown("<br><br><br><br><br>", unsafe_allow_html=True)
+st.header("Evaluation Results")
+st.subheader("Confusion Matrix - Intent Classification")
+eval_container = st.container()
+
+with eval_container:
+    show_eval = st.button("Show Evaluation Intents Results", type="secondary")
+
+    if show_eval:
+        # load latest intent report
+        report_path = (
+            project_root
+            / "bd_agent"
+            / "eval"
+            / "artifacts"
+            / "intents-eval-latest"
+            / "intent_report.json"
+        )
+
+        st.caption(f"Loading report from {report_path}")
+
+        with report_path.open("r", encoding="utf-8") as f:
+            report = json.load(f)
+
+        cm = report["overall"]["confusion_matrix"]
+
+        # convert to df and show
+        df = pd.DataFrame(cm)
+        st.markdown("### Confusion Matrix")
+        st.dataframe(df, use_container_width=True)
+        st.markdown("### Accuracy")
+        st.write(f"{report['overall']['accuracy']:.2%} accuracy")
 
 
 # --- Render helpers ---

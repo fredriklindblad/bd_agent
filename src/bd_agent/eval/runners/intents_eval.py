@@ -6,9 +6,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from bd_agent.eval.io import load_default_intents, run_dir
+from bd_agent.eval.io import load_default_intents, run_dir, write_json
 from bd_agent.intents.classifier import IntentClassification, intent_classifier
-from bd_agent.eval.metrics.classification import confusion_matrix
+from bd_agent.eval.metrics.classification import confusion_matrix, accuracy
 
 
 @dataclass
@@ -93,9 +93,20 @@ def create_report(preds: list[IntentEvalRow]) -> dict[str, Any]:
     # create confusion matrix
     cm = confusion_matrix(ref, pred)
 
-    # ------ CREATE REPORT DICTIONARY ------
+    # calculate other overall metrics here (accuracy, F1, etc.) - TODO
+    acc = accuracy(ref, pred)
 
-    return None
+    # ------ CREATE REPORT DICTIONARY ------
+    report: dict[str, Any] = {
+        "meta": {"num_samples": len(preds), "labels": list(cm.keys())},
+        "overall": {
+            "confusion_matrix": cm,
+            "accuracy": acc,
+            # TODO add other overall metrics
+        },
+    }
+
+    return report
 
 
 def run() -> Path:
@@ -103,9 +114,14 @@ def run() -> Path:
     rows = load_default_intents()  # TODO limit is for testing
     preds = _build_predictions(rows)  # returns a list of IntentEvalRow
 
+    # create report
     report = create_report(preds)  # TODO implement
+
+    # create output directory
     outdir = run_dir(label="intents-eval")
     out_path = outdir / "intent_report.json"
-    # write_json(out_path, report)  # TODO implement
+
+    # write report to json file
+    write_json(out_path, report)  # TODO implement
 
     return out_path

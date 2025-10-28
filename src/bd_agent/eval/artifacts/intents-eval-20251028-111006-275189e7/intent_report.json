@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "num_samples": 5,
+    "labels": [
+      "screening"
+    ]
+  },
+  "overall": {
+    "confusion_matrix": {
+      "screening": {
+        "screening": 5
+      }
+    }
+  }
+}
