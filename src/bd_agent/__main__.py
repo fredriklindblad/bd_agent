@@ -15,8 +15,6 @@ import argparse
 import subprocess
 from pathlib import Path
 
-import bd_agent.eval  # TODO delete TESTONLY
-
 
 def main():
     """Main entry point with subcommands"""
@@ -42,5 +40,4 @@ def main():
 
 
 if __name__ == "__main__":
-    # main()
-    bd_agent.eval.run()  # TODO delete TESTONLY
+    main()
