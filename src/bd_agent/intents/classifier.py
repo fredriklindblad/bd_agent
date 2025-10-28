@@ -11,8 +11,8 @@ class IntentClassification(BaseModel):
         "screening",
         "single_stock_analysis",
         "portfolio_analysis",
-        "general_investment_advice",
-        "None",
+        "investment_advice",
+        "none",
     ]
     confidence: float
     reasoning: str
@@ -39,7 +39,7 @@ SYSTEM_PROMPT = """
                     Your task is to classify the user's intent based on their prompt.
                     You should also provide a brief reasoning for your classification. Be concise.
                     You should also provide "confidence" (a float between 0 and 1) indicating how sure you are about the classification.
-                    If you are not at least 50% confident in your classification, return "None" as the intent.
+                    If you are not at least 50% confident in your classification, return "nsone" as the intent.
 
                     You should return a JSON object with the fields "intent", "confidence", and "reasoning".
                 """

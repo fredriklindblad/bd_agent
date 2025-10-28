@@ -15,6 +15,8 @@ import argparse
 import subprocess
 from pathlib import Path
 
+from bd_agent.eval import run
+
 
 def main():
     """Main entry point with subcommands"""
@@ -41,3 +43,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    # run()

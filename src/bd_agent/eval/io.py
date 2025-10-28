@@ -4,7 +4,7 @@ import json
 import uuid
 from pathlib import Path, WindowsPath
 from importlib import resources as ir
-from typing import Iterable
+from typing import Any
 from datetime import datetime
 
 
@@ -43,7 +43,7 @@ def _artifacts_dir() -> Path:
     return Path(base.joinpath("artifacts"))
 
 
-def run_dir(root: Path | None, label: str = "intents-eval") -> Path:
+def run_dir(root: Path | None = None, label: str = "intents-eval") -> Path:
     """Create a timestamped, uniques directory for one eval run"""
     root = root or _artifacts_dir()
     stamp = datetime.utcnow().strftime("%Y%m%d-%H%M%S")
@@ -53,9 +53,8 @@ def run_dir(root: Path | None, label: str = "intents-eval") -> Path:
     return d
 
 
-def write_jsonl(path: Path, rows: Iterable[dict]):
-    """Writes to jsonl. Used for eval results."""
+def write_json(path: Path, data: dict[str, Any]):
+    """Writes to json. Used for eval results that will be written to report."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8", newline="\n") as f:
-        for obj in rows:
-            f.write(json.dumps(obj, ensure_ascii=False) + "\n")
+    with path.open("w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
