@@ -1,6 +1,11 @@
 # Python cache
 __pycache__/
 
+# Build artifacts
+*.egg-info/
+dist/
+build/
+
 # Local virtual environments
 .venv/
 
