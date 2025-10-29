@@ -16,6 +16,7 @@ from matplotlib.axes import Axes
 
 from bd_agent.router import run_agent
 from bd_agent.intents import intent_classifier
+from bd_agent.eval import plot_coverage_accuracy_curve
 
 
 # Page setup
@@ -95,10 +96,25 @@ with eval_container:
         df = pd.DataFrame(cm)
         st.markdown("### Confusion Matrix")
         st.dataframe(df, use_container_width=True)
-        st.markdown("### Accuracy")
-        st.write(f"{report['overall']['accuracy']:.2%} accuracy")
-        st.markdown("### Precision")
-        st.write(f"{report['overall']['precision']:.2%} precision")
+
+        # other metrics
+        metrics = {
+            "Accuracy": report["overall"]["accuracy"],
+            "Precision": report["overall"]["precision"],
+            "Recall": report["overall"]["recall"],
+            "F1 Score": report["overall"]["f1_score"],
+            "Weighted F1 Score": report["overall"]["weighted_f1_score"],
+        }
+
+        st.markdown("### Overall Metrics")
+        for metric, value in metrics.items():
+            st.markdown(f"**{metric}:** {value:.2%}")
+
+        if "coverage_accuracy_curve" in report["overall"]:
+            st.markdown("### Coverage-Accuracy Curve")
+            curve_df = pd.DataFrame(report["overall"]["coverage_accuracy_curve"])
+            fig = plot_coverage_accuracy_curve(curve_df)
+            st.pyplot(fig, width="content")
 
 
 # --- Render helpers ---
@@ -141,7 +157,7 @@ def _render_result(obj: Any) -> None:
         if all(_is_matplotlib_figure(x) for x in obj):
             for i, fig in enumerate(obj, start=1):
                 st.subheader(f"Chart {i}")
-                st.pyplot(fig, use_container_width="content")
+                st.pyplot(fig, width="content")
             return
     # Else render object
     _render_one(obj)

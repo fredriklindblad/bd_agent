@@ -8,7 +8,15 @@ from typing import Any
 
 from bd_agent.eval.io import load_default_intents, run_dir, write_json
 from bd_agent.intents.classifier import IntentClassification, intent_classifier
-from bd_agent.eval.metrics.classification import confusion_matrix, accuracy, precision
+from bd_agent.eval.metrics.classification import (
+    confusion_matrix,
+    accuracy,
+    precision,
+    recall,
+    f1_score,
+    weighted_f1_score,
+    coverage_accuracy_curve,
+)
 
 
 @dataclass
@@ -67,12 +75,12 @@ def create_report(preds: list[IntentEvalRow]) -> dict[str, Any]:
     """Creates a report with below metrics.
 
     Overall metrics:
+        confusion matrix,
         accuracy,
         macro precision,
         macro recall,
         macro F1-score,
         weighted F1-score,
-        confusion matrix
         coverage-accuracy curve
 
     Per-intent metrics:
@@ -96,6 +104,12 @@ def create_report(preds: list[IntentEvalRow]) -> dict[str, Any]:
     # calculate other overall metrics here (accuracy, F1, etc.) - TODO
     acc = accuracy(ref, pred)
     macro_precision = precision(ref, pred)
+    macro_recall = recall(ref, pred)
+    macro_f1 = f1_score(ref, pred)
+    weighted_f1 = weighted_f1_score(ref, pred)
+    coverage_acc_curve = coverage_accuracy_curve(
+        ref, [(r.predicted, r.confidence) for r in preds]
+    )
 
     # ------ CREATE REPORT DICTIONARY ------
     report: dict[str, Any] = {
@@ -104,6 +118,10 @@ def create_report(preds: list[IntentEvalRow]) -> dict[str, Any]:
             "confusion_matrix": cm,
             "accuracy": acc,
             "precision": macro_precision,
+            "recall": macro_recall,
+            "f1_score": macro_f1,
+            "weighted_f1_score": weighted_f1,
+            "coverage_accuracy_curve": coverage_acc_curve.to_dict(orient="list"),
             # TODO add other overall metrics
         },
     }

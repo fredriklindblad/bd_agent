@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "num_samples": 88,
+    "labels": [
+      "investment_advice",
+      "none",
+      "portfolio_analysis",
+      "screening",
+      "single_stock_analysis"
+    ]
+  },
+  "overall": {
+    "confusion_matrix": {
+      "investment_advice": {
+        "investment_advice": 18,
+        "none": 0,
+        "portfolio_analysis": 2,
+        "screening": 0,
+        "single_stock_analysis": 0
+      },
+      "none": {
+        "investment_advice": 0,
+        "none": 8,
+        "portfolio_analysis": 0,
+        "screening": 0,
+        "single_stock_analysis": 0
+      },
+      "portfolio_analysis": {
+        "investment_advice": 0,
+        "none": 0,
+        "portfolio_analysis": 20,
+        "screening": 0,
+        "single_stock_analysis": 0
+      },
+      "screening": {
+        "investment_advice": 0,
+        "none": 0,
+        "portfolio_analysis": 0,
+        "screening": 20,
+        "single_stock_analysis": 0
+      },
+      "single_stock_analysis": {
+        "investment_advice": 0,
+        "none": 0,
+        "portfolio_analysis": 0,
+        "screening": 0,
+        "single_stock_analysis": 20
+      }
+    },
+    "accuracy": 0.9772727272727273,
+    "precision": 0.9818181818181818
+  }
+}

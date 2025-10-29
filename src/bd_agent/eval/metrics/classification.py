@@ -76,10 +76,77 @@ def recall(ref: list[str], pred: list[str], label: str | None = None) -> float:
     return sum(recalls) / len(recalls) if recalls else 0.0
 
 
-# create dummy test recall
-refs = ["A", "B", "A", "C", "B", "A", "B"]
-preds = ["A", "B", "C", "C", "B", "A", "A"]
-print("Recall:", recall(refs, preds))
-print("Recall for label A:", recall(refs, preds, label="A"))
-print("Recall for label B:", recall(refs, preds, label="B"))
-print("Recall for label C:", recall(refs, preds, label="C"))
+def f1_score(ref: list[str], pred: list[str], label: str | None = None) -> float:
+    """Computes F1 score for individual label or overall.
+    Args:
+        ref: list of reference labels
+        pred: list of predicted labels
+        label: specific label to compute F1 for (if None, computes overall F1)
+    Returns:
+        F1 score as float
+    """
+    # single label
+    if label is not None:
+        prec = precision(ref, pred, label)
+        rec = recall(ref, pred, label)
+        return 0.00 if prec + rec == 0 else 2 * (prec * rec) / (prec + rec)
+
+    # overall
+    labels = sorted(set(ref) | set(pred))
+    f1s = []
+    for l in labels:
+        prec = precision(ref, pred, l)
+        rec = recall(ref, pred, l)
+        f1 = 0.0 if prec + rec == 0 else 2 * (prec * rec) / (prec + rec)
+        f1s.append(f1)
+
+    return sum(f1s) / len(f1s) if f1s else 0.0
+
+
+def weighted_f1_score(ref: list[str], pred: list[str]) -> float:
+    """Computes weighted F1 score for classification task.
+    Args:
+        ref: list of reference labels
+        pred: list of predicted labels
+    Returns:
+        weighted F1 score as float
+    """
+    labels = sorted(set(ref) | set(pred))
+    label_counts = {l: ref.count(l) for l in labels}
+    total_count = len(ref)
+
+    weighted_f1s = []
+    for l in labels:
+        prec = precision(ref, pred, l)
+        rec = recall(ref, pred, l)
+        f1 = 0.0 if prec + rec == 0 else 2 * (prec * rec) / (prec + rec)
+        weight = label_counts[l] / total_count if total_count > 0 else 0.0
+        weighted_f1s.append(f1 * weight)
+
+    return sum(weighted_f1s)
+
+
+def coverage_accuracy_curve(
+    ref: list[str], pred: list[tuple[str, float]]
+) -> pd.DataFrame:
+    """Computes coverage-accuracy curve for classification task.
+    Args:
+        ref: list of reference labels
+        pred: list of tuples (predicted label, confidence score)
+    Returns:
+        coverage-accuracy curve as pandas DataFrame
+    """
+    #
+    data = list(zip(ref, pred))
+    data.sort(key=lambda x: x[1][1], reverse=True)
+    total = len(data)
+    correct = 0
+    coverages, accuracies = [], []
+
+    for k, (y_true, (y_pred, conf)) in enumerate(data, start=1):
+        if y_true == y_pred:
+            correct += 1
+        coverages.append(k / total)
+        accuracies.append(correct / k)
+
+    return pd.DataFrame({"coverage": coverages, "accuracy": accuracies})
