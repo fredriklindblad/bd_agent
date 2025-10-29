@@ -97,6 +97,8 @@ with eval_container:
         st.dataframe(df, use_container_width=True)
         st.markdown("### Accuracy")
         st.write(f"{report['overall']['accuracy']:.2%} accuracy")
+        st.markdown("### Precision")
+        st.write(f"{report['overall']['precision']:.2%} precision")
 
 
 # --- Render helpers ---

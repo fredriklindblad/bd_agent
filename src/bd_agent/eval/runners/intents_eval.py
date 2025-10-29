@@ -8,7 +8,7 @@ from typing import Any
 
 from bd_agent.eval.io import load_default_intents, run_dir, write_json
 from bd_agent.intents.classifier import IntentClassification, intent_classifier
-from bd_agent.eval.metrics.classification import confusion_matrix, accuracy
+from bd_agent.eval.metrics.classification import confusion_matrix, accuracy, precision
 
 
 @dataclass
@@ -68,10 +68,10 @@ def create_report(preds: list[IntentEvalRow]) -> dict[str, Any]:
 
     Overall metrics:
         accuracy,
-        macro F1-score,
-        weighted F1-score,
         macro precision,
         macro recall,
+        macro F1-score,
+        weighted F1-score,
         confusion matrix
         coverage-accuracy curve
 
@@ -95,6 +95,7 @@ def create_report(preds: list[IntentEvalRow]) -> dict[str, Any]:
 
     # calculate other overall metrics here (accuracy, F1, etc.) - TODO
     acc = accuracy(ref, pred)
+    macro_precision = precision(ref, pred)
 
     # ------ CREATE REPORT DICTIONARY ------
     report: dict[str, Any] = {
@@ -102,6 +103,7 @@ def create_report(preds: list[IntentEvalRow]) -> dict[str, Any]:
         "overall": {
             "confusion_matrix": cm,
             "accuracy": acc,
+            "precision": macro_precision,
             # TODO add other overall metrics
         },
     }

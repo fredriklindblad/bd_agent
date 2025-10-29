@@ -12,9 +12,9 @@
   "overall": {
     "confusion_matrix": {
       "investment_advice": {
-        "investment_advice": 18,
+        "investment_advice": 17,
         "none": 0,
-        "portfolio_analysis": 2,
+        "portfolio_analysis": 3,
         "screening": 0,
         "single_stock_analysis": 0
       },
@@ -47,7 +47,6 @@
         "single_stock_analysis": 20
       }
     },
-    "accuracy": 0.9772727272727273,
-    "precision": 0.9818181818181818
+    "accuracy": 0.9659090909090909
   }
 }
